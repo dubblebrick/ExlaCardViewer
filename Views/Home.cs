@@ -1,5 +1,6 @@
 using CardViewer.Models;
 using System.ComponentModel;
+using System.Text;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 
@@ -13,10 +14,10 @@ namespace CardViewer.Views
 
         internal static Home? _instance;
 
-        public static readonly string AppDataDir = Environment.ExpandEnvironmentVariables("%localappdata%/ExLaCardViewer");
-        public static readonly string NormalCardPath = AppDataDir + "/Cards.json";
-        public static readonly string MythicCardPath = AppDataDir + "/MythicCards.json";
-        public static readonly string FavoriteCardPath = AppDataDir + "/FavoriteCards.json";
+        public static readonly string AppDataDir = Environment.ExpandEnvironmentVariables("%localappdata%\\ExLaCardViewer");
+        public static readonly string NormalCardPath = AppDataDir + "\\Cards.json";
+        public static readonly string MythicCardPath = AppDataDir + "\\MythicCards.json";
+        public static readonly string FavoriteCardPath = AppDataDir + "\\FavoriteCards.json";
 
         // Two way lookup table to convert between RarityTier enum values and readable strings
         public static readonly Dictionary<CardSet.RarityTier, string> RarityNames = new()
@@ -92,27 +93,113 @@ namespace CardViewer.Views
 
             labelVersion.Text = Program.Version;
 
+            LinkedList<Tuple<string, CardSet.RarityTier>> corruptCards = new();
+
             foreach (string cardName in normalCards.Keys.OrderBy(SortCards))
             {
                 int nodeIndex = treeViewCards.Nodes[0].Nodes.Add(new TreeNode(cardName));
                 foreach (CardSet.RarityTier rarity in normalCards[cardName].Keys.Order())
                 {
+                    if (!CheckValidPaths(normalCards[cardName][rarity]))
+                    {
+                        corruptCards.AddLast(new Tuple<string, CardSet.RarityTier>(cardName, rarity));
+                        continue;
+                    }
+
                     treeViewCards.Nodes[0].Nodes[nodeIndex].Nodes.Add(new TreeNode(RarityNames[rarity]));
+                }
+
+                if (treeViewCards.Nodes[0].Nodes[nodeIndex].Nodes.Count == 0)
+                {
+                    treeViewCards.Nodes[0].Nodes[nodeIndex].Remove();
                 }
             }
 
             foreach (string setName in mythicCards.Keys)
             {
+                if (!CheckValidPaths(normalCards[setName][CardSet.RarityTier.Mythic]))
+                {
+                    corruptCards.AddLast(new Tuple<string, CardSet.RarityTier>(setName, CardSet.RarityTier.Mythic));
+                    continue;
+                }
                 treeViewCards.Nodes[1].Nodes.Add(new TreeNode(setName));
             }
 
             foreach (var card in favoriteCards)
             {
+                if (corruptCards.Contains(card))
+                {
+                    continue;
+                }
                 string nodeName = card.Item1 + " - " + RarityNames[card.Item2];
                 treeViewCards.Nodes[2].Nodes.Add(new TreeNode(nodeName));
             }
 
+            if (corruptCards.Count > 0)
+            {
+                StringBuilder sb = new StringBuilder("The following cards contained invalid data and have been deleted to prevent issues:\n");
+                foreach (var card in corruptCards)
+                {
+                    sb.Append(card.Item1);
+                    sb.Append(" - ");
+                    sb.AppendLine(RarityNames[card.Item2]);
+
+                    if (card.Item2 == CardSet.RarityTier.Mythic)
+                    {
+                        mythicCards.Remove(card.Item1);
+                    }
+                    else
+                    {
+                        normalCards[card.Item1].Remove(card.Item2);
+                        if (normalCards[card.Item1].Count == 0)
+                        {
+                            normalCards.Remove(card.Item1);
+                        }
+                    }
+
+                    favoriteCards.Remove(card);
+                }
+                backgroundWorkerSaveData.RunWorkerAsync("a");
+
+                Alert alertForm = new Alert(sb.ToString());
+                alertForm.ShowDialog();
+            }
+
             _instance = this;
+        }
+
+        /// <summary>
+        /// Checks if every file path on a card set points to the appdata directory.
+        /// </summary>
+        /// <param name="set">The card set to check</param>
+        /// <returns>true if every path is valid</returns>
+        private bool CheckValidPaths(CardSet set)
+        {
+            string[] paths =
+            [
+                set.Portrait.ImageFile,
+                set.Portrait.AnimFile ?? string.Empty,
+                set.Ability.ImageFile,
+                set.Ability.AnimFile ?? string.Empty,
+                set.Lore.ImageFile,
+                set.Lore.AnimFile ?? string.Empty,
+            ];
+
+            string imageDir = AppDataDir + "\\images";
+            foreach (string path in paths)
+            {
+                if (path == string.Empty)
+                {
+                    continue;
+                }
+
+                if (Path.GetDirectoryName(path) != imageDir)
+                {
+                    return false;
+                }
+            }
+
+            return true;
         }
 
         private string SortCards(string name)

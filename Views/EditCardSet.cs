@@ -388,12 +388,12 @@ namespace CardViewer.Views
             string safeName = sb.ToString();
 
             // Image files need to be copied to AppData and given standardized names
-            if (!Directory.Exists(Home.AppDataDir + "/images"))
+            if (!Directory.Exists(Home.AppDataDir + "\\images"))
             {
-                Directory.CreateDirectory(Home.AppDataDir + "/images");
+                Directory.CreateDirectory(Home.AppDataDir + "\\images");
             }
 
-            set.Portrait.ImageFile = $"{Home.AppDataDir}/images/{safeName}_{rarity}_P.png";
+            set.Portrait.ImageFile = $"{Home.AppDataDir}\\images\\{safeName}_{rarity}_P.png";
             if (!File.Exists(set.Portrait.ImageFile))
             {
                 File.Copy(portraitImagePath, set.Portrait.ImageFile, false);
@@ -401,33 +401,33 @@ namespace CardViewer.Views
 
             if (portraitAnimPath != string.Empty)
             {
-                set.Portrait.AnimFile = $"{Home.AppDataDir}/images/{safeName}_{rarity}_PA.gif";
+                set.Portrait.AnimFile = $"{Home.AppDataDir}\\images\\{safeName}_{rarity}_PA.gif";
                 if (!File.Exists(set.Portrait.AnimFile))
                 {
                     File.Copy(portraitAnimPath, set.Portrait.AnimFile, false);
                 }
             }
-            set.Ability.ImageFile = $"{Home.AppDataDir}/images/{safeName}_{rarity}_A.png";
+            set.Ability.ImageFile = $"{Home.AppDataDir}\\images\\{safeName}_{rarity}_A.png";
             if (!File.Exists(set.Ability.ImageFile))
             {
                 File.Copy(abilityImagePath, set.Ability.ImageFile, false);
             }
             if (abilityAnimPath != string.Empty)
             {
-                set.Ability.AnimFile = $"{Home.AppDataDir}/images/{safeName}_{rarity}_AA.gif";
+                set.Ability.AnimFile = $"{Home.AppDataDir}\\images\\{safeName}_{rarity}_AA.gif";
                 if (!File.Exists(set.Ability.AnimFile))
                 {
                     File.Copy(abilityAnimPath, set.Ability.AnimFile, false);
                 }
             }
-            set.Lore.ImageFile = $"{Home.AppDataDir}/images/{safeName}_{rarity}_L.png";
+            set.Lore.ImageFile = $"{Home.AppDataDir}\\images\\{safeName}_{rarity}_L.png";
             if (!File.Exists(set.Lore.ImageFile))
             {
                 File.Copy(loreImagePath, set.Lore.ImageFile, false);
             }
             if (loreAnimPath != string.Empty)
             {
-                set.Lore.AnimFile = $"{Home.AppDataDir}/images/{safeName}_{rarity}_LA.gif";
+                set.Lore.AnimFile = $"{Home.AppDataDir}\\images\\{safeName}_{rarity}_LA.gif";
                 if (!File.Exists(set.Lore.AnimFile))
                 {
                     File.Copy(loreAnimPath, set.Lore.AnimFile, false);
