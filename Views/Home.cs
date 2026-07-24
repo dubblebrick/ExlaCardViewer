@@ -90,6 +90,8 @@ namespace CardViewer.Views
 
             InitializeComponent();
 
+            labelVersion.Text = Program.Version;
+
             foreach (string cardName in normalCards.Keys.OrderBy(SortCards))
             {
                 int nodeIndex = treeViewCards.Nodes[0].Nodes.Add(new TreeNode(cardName));

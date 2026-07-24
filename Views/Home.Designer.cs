@@ -78,6 +78,7 @@
             pictureBoxLore = new PictureBox();
             buttonAddCard = new Button();
             backgroundWorkerSaveData = new System.ComponentModel.BackgroundWorker();
+            labelVersion = new Label();
             cardDisplay.SuspendLayout();
             tabPortrait.SuspendLayout();
             panelPortrait.SuspendLayout();
@@ -96,7 +97,7 @@
             // treeViewCards
             // 
             treeViewCards.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left;
-            treeViewCards.Location = new Point(17, 23);
+            treeViewCards.Location = new Point(17, 12);
             treeViewCards.Name = "treeViewCards";
             treeNode1.Name = "nodeStandardCards";
             treeNode1.Text = "Standard Cards";
@@ -105,7 +106,7 @@
             treeNode3.Name = "nodeFavoriteCards";
             treeNode3.Text = "Favorites";
             treeViewCards.Nodes.AddRange(new TreeNode[] { treeNode1, treeNode2, treeNode3 });
-            treeViewCards.Size = new Size(211, 702);
+            treeViewCards.Size = new Size(211, 696);
             treeViewCards.TabIndex = 1;
             treeViewCards.AfterSelect += treeViewCards_AfterSelect;
             // 
@@ -606,7 +607,7 @@
             // buttonAddCard
             // 
             buttonAddCard.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
-            buttonAddCard.Location = new Point(17, 729);
+            buttonAddCard.Location = new Point(17, 714);
             buttonAddCard.Name = "buttonAddCard";
             buttonAddCard.Size = new Size(211, 25);
             buttonAddCard.TabIndex = 5;
@@ -618,12 +619,22 @@
             // 
             backgroundWorkerSaveData.DoWork += backgroundWorkerSaveData_DoWork;
             // 
+            // labelVersion
+            // 
+            labelVersion.AutoSize = true;
+            labelVersion.Location = new Point(12, 742);
+            labelVersion.Name = "labelVersion";
+            labelVersion.Size = new Size(23, 15);
+            labelVersion.TabIndex = 6;
+            labelVersion.Text = "ver";
+            // 
             // Home
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = SystemColors.Control;
             ClientSize = new Size(1184, 761);
+            Controls.Add(labelVersion);
             Controls.Add(buttonAddCard);
             Controls.Add(treeViewCards);
             Controls.Add(cardDisplay);
@@ -649,6 +660,7 @@
             ((System.ComponentModel.ISupportInitialize)pictureBoxRarityLore).EndInit();
             ((System.ComponentModel.ISupportInitialize)pictureBoxLore).EndInit();
             ResumeLayout(false);
+            PerformLayout();
         }
 
         #endregion
@@ -698,5 +710,6 @@
         private Label labelPortraitAnim;
         private Label labelAbilityAnim;
         private Label labelLoreAnim;
+        private Label labelVersion;
     }
 }
