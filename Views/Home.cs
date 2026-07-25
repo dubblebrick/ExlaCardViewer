@@ -39,6 +39,13 @@ namespace CardViewer.Views
         private CardSet? selectedCard = null;
         private bool cardAnimated = false;
 
+        private MemoryStream? portraitImageStream;
+        private MemoryStream? portraitAnimStream;
+        private MemoryStream? abilityImageStream;
+        private MemoryStream? abilityAnimStream;
+        private MemoryStream? loreImageStream;
+        private MemoryStream? loreAnimStream;
+
         public Home()
         {
             // ensure that the app data directory exists
@@ -117,7 +124,7 @@ namespace CardViewer.Views
 
             foreach (string setName in mythicCards.Keys)
             {
-                if (!CheckValidPaths(normalCards[setName][CardSet.RarityTier.Mythic]))
+                if (!CheckValidPaths(mythicCards[setName]))
                 {
                     corruptCards.AddLast(new Tuple<string, CardSet.RarityTier>(setName, CardSet.RarityTier.Mythic));
                     continue;
@@ -292,6 +299,70 @@ namespace CardViewer.Views
             }
         }
 
+        private void backgroundWorkerLoadImage_DoWork(object sender, DoWorkEventArgs e)
+        {
+            if (e.Argument == null || e.Argument is not CardSet)
+            {
+                throw new ArgumentException("Argument must be a CardSet");
+            }
+
+            CardSet set = (CardSet) e.Argument;
+
+            portraitImageStream?.Dispose();
+            portraitImageStream = new MemoryStream();
+            using (FileStream fs = File.OpenRead(set.Portrait.ImageFile))
+            {
+                fs.CopyTo(portraitImageStream);
+            }
+            pictureBoxPortrait.Image = Image.FromStream(portraitImageStream);
+
+            if (set.Portrait.AnimFile != null)
+            {
+                portraitAnimStream?.Dispose();
+                portraitAnimStream = new MemoryStream();
+                using (FileStream fs = File.OpenRead(set.Portrait.AnimFile))
+                {
+                    fs.CopyTo(portraitAnimStream);
+                }
+            }
+
+            abilityImageStream?.Dispose();
+            abilityImageStream = new MemoryStream();
+            using (FileStream fs = File.OpenRead(set.Ability.ImageFile))
+            {
+                fs.CopyTo(abilityImageStream);
+            }
+            pictureBoxAbility.Image = Image.FromStream(abilityImageStream);
+
+            if (set.Ability.AnimFile != null)
+            {
+                abilityAnimStream?.Dispose();
+                abilityAnimStream = new MemoryStream();
+                using (FileStream fs = File.OpenRead(set.Ability.AnimFile))
+                {
+                    fs.CopyTo(abilityAnimStream);
+                }
+            }
+
+            loreImageStream?.Dispose();
+            loreImageStream = new MemoryStream();
+            using (FileStream fs = File.OpenRead(set.Lore.ImageFile))
+            {
+                fs.CopyTo(loreImageStream);
+            }
+            pictureBoxLore.Image = Image.FromStream(loreImageStream);
+
+            if (set.Lore.AnimFile != null)
+            {
+                loreAnimStream?.Dispose();
+                loreAnimStream = new MemoryStream();
+                using (FileStream fs = File.OpenRead(set.Lore.AnimFile))
+                {
+                    fs.CopyTo(loreAnimStream);
+                }
+            }
+        }
+
         // disabling null reference warnings here since most things are implicitly null checked and the compiler isn't good at catching that
 #pragma warning disable CS8600, CS8602
         private void treeViewCards_AfterSelect(object sender, TreeViewEventArgs e)
@@ -357,6 +428,7 @@ namespace CardViewer.Views
             }
 
             CardSet set = selectedCard;
+
             Form editCardForm = new EditCardSet(ref set, true);
             DialogResult result = editCardForm.ShowDialog();
             if (result == DialogResult.OK)
@@ -446,7 +518,7 @@ namespace CardViewer.Views
                 {
                     if (node.Text == set.Name)
                     {
-                        foreach(TreeNode subNode in node.Nodes)
+                        foreach (TreeNode subNode in node.Nodes)
                         {
                             if (subNode.Text == RarityNames[set.Rarity])
                             {
@@ -509,23 +581,22 @@ namespace CardViewer.Views
                 throw new InvalidOperationException();
             }
 
+            backgroundWorkerLoadImage.RunWorkerAsync(selectedCard);
+
             string series = $"{selectedCard.Series} Series #{selectedCard.Number}";
             labelSeriesPortrait.Text = series;
             labelSeriesAbility.Text = series;
             labelSeriesLore.Text = series;
-
-            pictureBoxPortrait.ImageLocation = selectedCard.Portrait.ImageFile;
+            
             labelPortraitAnim.Visible = selectedCard.Portrait.AnimFile != null;
 
             labelPortraitTitle.Text = selectedCard.Portrait.Title;
 
-            pictureBoxAbility.ImageLocation = selectedCard.Ability.ImageFile;
             labelAbilityAnim.Visible = selectedCard.Ability.AnimFile != null;
 
             labelAbilityName.Text = "Ability: " + selectedCard.Ability.AbilityName;
             labelAbility.Text = selectedCard.Ability.AbilityDesc;
 
-            pictureBoxLore.ImageLocation = selectedCard.Lore.ImageFile;
             labelLoreAnim.Visible = selectedCard.Lore.AnimFile != null;
 
             labelDetail1Name.Text = selectedCard.Lore.Detail1Name;
@@ -598,21 +669,21 @@ namespace CardViewer.Views
             switch (cardDisplay.SelectedIndex)
             {
                 case 0:
-                    if (selectedCard.Portrait.AnimFile != null)
+                    if (portraitAnimStream != null)
                     {
-                        pictureBoxPortrait.ImageLocation = selectedCard.Portrait.AnimFile;
+                        pictureBoxPortrait.Image = Image.FromStream(portraitAnimStream);
                     }
                     break;
                 case 1:
-                    if (selectedCard.Ability.AnimFile != null)
+                    if (abilityAnimStream != null)
                     {
-                        pictureBoxAbility.ImageLocation = selectedCard.Ability.AnimFile;
+                        pictureBoxAbility.Image = Image.FromStream(abilityAnimStream);
                     }
                     break;
                 case 2:
-                    if (selectedCard.Lore.AnimFile != null)
+                    if (loreAnimStream != null)
                     {
-                        pictureBoxLore.ImageLocation = selectedCard.Portrait.AnimFile;
+                        pictureBoxLore.Image = Image.FromStream(loreAnimStream);
                     }
                     break;
             }
@@ -627,18 +698,9 @@ namespace CardViewer.Views
                 return;
             }
 
-            switch (cardDisplay.SelectedIndex)
-            {
-                case 0:
-                    pictureBoxPortrait.ImageLocation = selectedCard.Portrait.ImageFile;
-                    break;
-                case 1:
-                    pictureBoxAbility.ImageLocation = selectedCard.Ability.ImageFile;
-                    break;
-                case 2:
-                    pictureBoxLore.ImageLocation = selectedCard.Lore.ImageFile;
-                    break;
-            }
+            pictureBoxPortrait.Image = Image.FromStream(portraitImageStream);
+            pictureBoxAbility.Image = Image.FromStream(abilityImageStream);
+            pictureBoxLore.Image = Image.FromStream(loreImageStream);
 
             cardAnimated = false;
         }

@@ -205,6 +205,11 @@ namespace CardViewer.Views
                 }
             }
         }
+        private void buttonRemovePortraitAnim_Click(object sender, EventArgs e)
+        {
+            portraitAnimPath = string.Empty;
+            labelPortraitAnimName.Text = "?";
+        }
 
         // ----- Ability card page events -----
 
@@ -248,6 +253,12 @@ namespace CardViewer.Views
             }
         }
 
+        private void buttonRemoveAbilityAnim_Click(object sender, EventArgs e)
+        {
+            abilityAnimPath = string.Empty;
+            labelAbilityAnimName.Text = "?";
+        }
+
 
         // ----- Lore card page events -----
 
@@ -289,6 +300,12 @@ namespace CardViewer.Views
                     ValidateRequiredControls();
                 }
             }
+        }
+
+        private void buttonRemoveLoreAnim_Click(object sender, EventArgs e)
+        {
+            loreAnimPath = string.Empty;
+            labelLoreAnimName.Text = "?";
         }
 
         // ----- Validation & Finish button -----
@@ -357,7 +374,7 @@ namespace CardViewer.Views
                     }
                 }
             }
-            
+
             set.Name = inputCharName.Text;
             set.Series = inputCharSeries.Text;
             set.Number = (int)inputCharNum.Value;
@@ -393,46 +410,66 @@ namespace CardViewer.Views
                 Directory.CreateDirectory(Home.AppDataDir + "\\images");
             }
 
-            set.Portrait.ImageFile = $"{Home.AppDataDir}\\images\\{safeName}_{rarity}_P.png";
-            if (!File.Exists(set.Portrait.ImageFile))
+            if (set.Portrait.ImageFile != portraitImagePath)
             {
-                File.Copy(portraitImagePath, set.Portrait.ImageFile, false);
+                set.Portrait.ImageFile = $"{Home.AppDataDir}\\images\\{safeName}_{rarity}_P.png";
+                File.Copy(portraitImagePath, set.Portrait.ImageFile, true);
             }
 
-            if (portraitAnimPath != string.Empty)
+            if (set.Portrait.AnimFile != portraitAnimPath)
             {
-                set.Portrait.AnimFile = $"{Home.AppDataDir}\\images\\{safeName}_{rarity}_PA.gif";
-                if (!File.Exists(set.Portrait.AnimFile))
+                if (portraitAnimPath != string.Empty)
                 {
-                    File.Copy(portraitAnimPath, set.Portrait.AnimFile, false);
+                    set.Portrait.AnimFile = $"{Home.AppDataDir}\\images\\{safeName}_{rarity}_PA.gif";
+                    File.Copy(portraitAnimPath, set.Portrait.AnimFile, true);
+                }
+                else if (set.Portrait.AnimFile != null)
+                {
+                    File.Delete(set.Portrait.AnimFile);
+                    set.Portrait.AnimFile = null;
                 }
             }
-            set.Ability.ImageFile = $"{Home.AppDataDir}\\images\\{safeName}_{rarity}_A.png";
-            if (!File.Exists(set.Ability.ImageFile))
+
+            if (set.Ability.ImageFile != abilityImagePath)
             {
-                File.Copy(abilityImagePath, set.Ability.ImageFile, false);
+                set.Ability.ImageFile = $"{Home.AppDataDir}\\images\\{safeName}_{rarity}_A.png";
+                File.Copy(abilityImagePath, set.Ability.ImageFile, true);
             }
-            if (abilityAnimPath != string.Empty)
+
+            if (set.Ability.AnimFile != abilityAnimPath)
             {
-                set.Ability.AnimFile = $"{Home.AppDataDir}\\images\\{safeName}_{rarity}_AA.gif";
-                if (!File.Exists(set.Ability.AnimFile))
+                if (abilityAnimPath != string.Empty)
                 {
-                    File.Copy(abilityAnimPath, set.Ability.AnimFile, false);
+                    set.Ability.AnimFile = $"{Home.AppDataDir}\\images\\{safeName}_{rarity}_AA.gif";
+                    File.Copy(abilityAnimPath, set.Ability.AnimFile, true);
+                }
+                else if (set.Ability.AnimFile != null)
+                {
+                    File.Delete(set.Ability.AnimFile);
+                    set.Ability.AnimFile = null;
                 }
             }
-            set.Lore.ImageFile = $"{Home.AppDataDir}\\images\\{safeName}_{rarity}_L.png";
-            if (!File.Exists(set.Lore.ImageFile))
+
+            if (set.Lore.ImageFile != loreImagePath)
             {
-                File.Copy(loreImagePath, set.Lore.ImageFile, false);
+                set.Lore.ImageFile = $"{Home.AppDataDir}\\images\\{safeName}_{rarity}_L.png";
+                File.Copy(loreImagePath, set.Lore.ImageFile, true);
             }
-            if (loreAnimPath != string.Empty)
+
+            if (set.Lore.AnimFile != loreAnimPath)
             {
-                set.Lore.AnimFile = $"{Home.AppDataDir}\\images\\{safeName}_{rarity}_LA.gif";
-                if (!File.Exists(set.Lore.AnimFile))
+                if (loreAnimPath != string.Empty)
                 {
-                    File.Copy(loreAnimPath, set.Lore.AnimFile, false);
+                    set.Lore.AnimFile = $"{Home.AppDataDir}\\images\\{safeName}_{rarity}_LA.gif";
+                    File.Copy(loreAnimPath, set.Lore.AnimFile, true);
+                }
+                else if (set.Lore.AnimFile != null)
+                {
+                    File.Delete(set.Lore.AnimFile);
+                    set.Lore.AnimFile = null;
                 }
             }
+
             DialogResult = DialogResult.OK;
         }
     }

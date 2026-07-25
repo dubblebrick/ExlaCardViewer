@@ -44,6 +44,7 @@
             inputCharName = new TextBox();
             inputCharNum = new NumericUpDown();
             tabPortrait = new TabPage();
+            buttonRemovePortraitAnim = new Button();
             labelPortraitAnimName = new Label();
             labelPortraitImageName = new Label();
             labelRequired2 = new Label();
@@ -54,6 +55,7 @@
             buttonUploadPortraitAnim = new Button();
             buttonUploadPortrait = new Button();
             tabAbility = new TabPage();
+            buttonRemoveAbilityAnim = new Button();
             labelAbilityAnimName = new Label();
             labelAbilityImageName = new Label();
             labelAbilityAnim = new Label();
@@ -66,6 +68,7 @@
             inputAbilityName = new TextBox();
             label9 = new Label();
             tabLore = new TabPage();
+            buttonRemoveLoreAnim = new Button();
             label2 = new Label();
             label1 = new Label();
             labelLoreAnimName = new Label();
@@ -247,6 +250,7 @@
             // 
             // tabPortrait
             // 
+            tabPortrait.Controls.Add(buttonRemovePortraitAnim);
             tabPortrait.Controls.Add(labelPortraitAnimName);
             tabPortrait.Controls.Add(labelPortraitImageName);
             tabPortrait.Controls.Add(labelRequired2);
@@ -264,10 +268,20 @@
             tabPortrait.Text = "Portrait Card";
             tabPortrait.UseVisualStyleBackColor = true;
             // 
+            // buttonRemovePortraitAnim
+            // 
+            buttonRemovePortraitAnim.Location = new Point(108, 317);
+            buttonRemovePortraitAnim.Name = "buttonRemovePortraitAnim";
+            buttonRemovePortraitAnim.Size = new Size(21, 23);
+            buttonRemovePortraitAnim.TabIndex = 19;
+            buttonRemovePortraitAnim.Text = "x";
+            buttonRemovePortraitAnim.UseVisualStyleBackColor = true;
+            buttonRemovePortraitAnim.Click += buttonRemovePortraitAnim_Click;
+            // 
             // labelPortraitAnimName
             // 
             labelPortraitAnimName.AutoSize = true;
-            labelPortraitAnimName.Location = new Point(108, 321);
+            labelPortraitAnimName.Location = new Point(135, 321);
             labelPortraitAnimName.Name = "labelPortraitAnimName";
             labelPortraitAnimName.Size = new Size(12, 15);
             labelPortraitAnimName.TabIndex = 18;
@@ -348,6 +362,7 @@
             // 
             // tabAbility
             // 
+            tabAbility.Controls.Add(buttonRemoveAbilityAnim);
             tabAbility.Controls.Add(labelAbilityAnimName);
             tabAbility.Controls.Add(labelAbilityImageName);
             tabAbility.Controls.Add(labelAbilityAnim);
@@ -367,10 +382,20 @@
             tabAbility.Text = "Ability Card";
             tabAbility.UseVisualStyleBackColor = true;
             // 
+            // buttonRemoveAbilityAnim
+            // 
+            buttonRemoveAbilityAnim.Location = new Point(108, 317);
+            buttonRemoveAbilityAnim.Name = "buttonRemoveAbilityAnim";
+            buttonRemoveAbilityAnim.Size = new Size(21, 23);
+            buttonRemoveAbilityAnim.TabIndex = 27;
+            buttonRemoveAbilityAnim.Text = "x";
+            buttonRemoveAbilityAnim.UseVisualStyleBackColor = true;
+            buttonRemoveAbilityAnim.Click += buttonRemoveAbilityAnim_Click;
+            // 
             // labelAbilityAnimName
             // 
             labelAbilityAnimName.AutoSize = true;
-            labelAbilityAnimName.Location = new Point(108, 321);
+            labelAbilityAnimName.Location = new Point(135, 321);
             labelAbilityAnimName.Name = "labelAbilityAnimName";
             labelAbilityAnimName.Size = new Size(12, 15);
             labelAbilityAnimName.TabIndex = 26;
@@ -470,6 +495,7 @@
             // 
             // tabLore
             // 
+            tabLore.Controls.Add(buttonRemoveLoreAnim);
             tabLore.Controls.Add(label2);
             tabLore.Controls.Add(label1);
             tabLore.Controls.Add(labelLoreAnimName);
@@ -501,6 +527,16 @@
             tabLore.Text = "Lore Card";
             tabLore.UseVisualStyleBackColor = true;
             // 
+            // buttonRemoveLoreAnim
+            // 
+            buttonRemoveLoreAnim.Location = new Point(108, 317);
+            buttonRemoveLoreAnim.Name = "buttonRemoveLoreAnim";
+            buttonRemoveLoreAnim.Size = new Size(21, 23);
+            buttonRemoveLoreAnim.TabIndex = 35;
+            buttonRemoveLoreAnim.Text = "x";
+            buttonRemoveLoreAnim.UseVisualStyleBackColor = true;
+            buttonRemoveLoreAnim.Click += buttonRemoveLoreAnim_Click;
+            // 
             // label2
             // 
             label2.AutoSize = true;
@@ -522,7 +558,7 @@
             // labelLoreAnimName
             // 
             labelLoreAnimName.AutoSize = true;
-            labelLoreAnimName.Location = new Point(108, 321);
+            labelLoreAnimName.Location = new Point(135, 321);
             labelLoreAnimName.Name = "labelLoreAnimName";
             labelLoreAnimName.Size = new Size(12, 15);
             labelLoreAnimName.TabIndex = 32;
@@ -832,5 +868,8 @@
         private Label label2;
         private Label label1;
         private PictureBox pictureBoxRarity;
+        private Button buttonRemovePortraitAnim;
+        private Button buttonRemoveAbilityAnim;
+        private Button buttonRemoveLoreAnim;
     }
 }

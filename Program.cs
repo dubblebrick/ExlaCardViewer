@@ -6,7 +6,7 @@ namespace CardViewer
 {
     internal static class Program
     {
-        public const string Version = "v1.0.2";
+        public const string Version = "v1.1.0";
 
         /// <summary>
         ///  The main entry point for the application.

@@ -79,6 +79,7 @@
             buttonAddCard = new Button();
             backgroundWorkerSaveData = new System.ComponentModel.BackgroundWorker();
             labelVersion = new Label();
+            backgroundWorkerLoadImage = new System.ComponentModel.BackgroundWorker();
             cardDisplay.SuspendLayout();
             tabPortrait.SuspendLayout();
             panelPortrait.SuspendLayout();
@@ -109,6 +110,7 @@
             treeViewCards.Size = new Size(211, 696);
             treeViewCards.TabIndex = 1;
             treeViewCards.AfterSelect += treeViewCards_AfterSelect;
+            treeViewCards.KeyPress += cardDisplay_KeyPress;
             // 
             // cardDisplay
             // 
@@ -122,6 +124,7 @@
             cardDisplay.Size = new Size(934, 761);
             cardDisplay.TabIndex = 3;
             cardDisplay.Visible = false;
+            cardDisplay.Selecting += cardDisplay_Selecting;
             cardDisplay.KeyPress += cardDisplay_KeyPress;
             // 
             // tabPortrait
@@ -628,6 +631,10 @@
             labelVersion.TabIndex = 6;
             labelVersion.Text = "ver";
             // 
+            // backgroundWorkerLoadImage
+            // 
+            backgroundWorkerLoadImage.DoWork += backgroundWorkerLoadImage_DoWork;
+            // 
             // Home
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -711,5 +718,6 @@
         private Label labelAbilityAnim;
         private Label labelLoreAnim;
         private Label labelVersion;
+        private System.ComponentModel.BackgroundWorker backgroundWorkerLoadImage;
     }
 }
