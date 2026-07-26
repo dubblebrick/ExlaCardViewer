@@ -413,7 +413,7 @@ namespace CardViewer.Views
                 throw new ArgumentException("Argument must be a CardSet");
             }
 
-            CardSet set = (CardSet) e.Argument;
+            CardSet set = (CardSet)e.Argument;
 
             portraitImageStream?.Dispose();
             portraitImageStream = new MemoryStream();
@@ -718,7 +718,7 @@ namespace CardViewer.Views
             labelSeriesPortrait.Text = series;
             labelSeriesAbility.Text = series;
             labelSeriesLore.Text = series;
-            
+
             labelPortraitAnim.Visible = selectedCard.Portrait.AnimFile != null;
 
             labelPortraitTitle.Text = selectedCard.Portrait.Title;
@@ -850,6 +850,11 @@ namespace CardViewer.Views
             pictureBoxLore.Image = Image.FromStream(loreImageStream);
 
             cardAnimated = false;
+        }
+
+        private void labelStory2Title_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

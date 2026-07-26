@@ -61,6 +61,13 @@
             pictureBoxAbility = new PictureBox();
             tabLore = new TabPage();
             panel1 = new Panel();
+            panel2 = new Panel();
+            panel4 = new Panel();
+            labelStory2Title = new Label();
+            labelStory2 = new Label();
+            panel3 = new Panel();
+            labelStory1Title = new Label();
+            labelStory1 = new Label();
             buttonExportLore = new Button();
             labelLoreAnim = new Label();
             buttonDeleteLore = new Button();
@@ -68,13 +75,9 @@
             buttonEditLore = new Button();
             pictureBoxRarityLore = new PictureBox();
             buttonFavoriteLore = new Button();
-            labelStory2 = new Label();
             labelSeriesLore = new Label();
             labelNameLore = new Label();
-            labelStory2Title = new Label();
-            labelStory1 = new Label();
             labelDetail2Name = new Label();
-            labelStory1Title = new Label();
             labelDetail2 = new Label();
             labelDetail1Name = new Label();
             labelDetail1 = new Label();
@@ -97,6 +100,9 @@
             ((System.ComponentModel.ISupportInitialize)pictureBoxAbility).BeginInit();
             tabLore.SuspendLayout();
             panel1.SuspendLayout();
+            panel2.SuspendLayout();
+            panel4.SuspendLayout();
+            panel3.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBoxRarityLore).BeginInit();
             ((System.ComponentModel.ISupportInitialize)pictureBoxLore).BeginInit();
             SuspendLayout();
@@ -432,6 +438,7 @@
             // 
             // panel1
             // 
+            panel1.Controls.Add(panel2);
             panel1.Controls.Add(buttonExportLore);
             panel1.Controls.Add(labelLoreAnim);
             panel1.Controls.Add(buttonDeleteLore);
@@ -439,13 +446,9 @@
             panel1.Controls.Add(buttonEditLore);
             panel1.Controls.Add(pictureBoxRarityLore);
             panel1.Controls.Add(buttonFavoriteLore);
-            panel1.Controls.Add(labelStory2);
             panel1.Controls.Add(labelSeriesLore);
             panel1.Controls.Add(labelNameLore);
-            panel1.Controls.Add(labelStory2Title);
-            panel1.Controls.Add(labelStory1);
             panel1.Controls.Add(labelDetail2Name);
-            panel1.Controls.Add(labelStory1Title);
             panel1.Controls.Add(labelDetail2);
             panel1.Controls.Add(labelDetail1Name);
             panel1.Controls.Add(labelDetail1);
@@ -454,6 +457,85 @@
             panel1.Name = "panel1";
             panel1.Size = new Size(400, 727);
             panel1.TabIndex = 23;
+            // 
+            // panel2
+            // 
+            panel2.AutoScroll = true;
+            panel2.Controls.Add(panel4);
+            panel2.Controls.Add(panel3);
+            panel2.Location = new Point(0, 152);
+            panel2.Name = "panel2";
+            panel2.Size = new Size(403, 392);
+            panel2.TabIndex = 25;
+            // 
+            // panel4
+            // 
+            panel4.AutoSize = true;
+            panel4.Controls.Add(labelStory2Title);
+            panel4.Controls.Add(labelStory2);
+            panel4.Dock = DockStyle.Top;
+            panel4.Location = new Point(0, 37);
+            panel4.Name = "panel4";
+            panel4.Size = new Size(403, 40);
+            panel4.TabIndex = 22;
+            // 
+            // labelStory2Title
+            // 
+            labelStory2Title.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            labelStory2Title.Font = new Font("Segoe UI Semibold", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            labelStory2Title.Location = new Point(3, 0);
+            labelStory2Title.Margin = new Padding(3, 11, 3, 0);
+            labelStory2Title.Name = "labelStory2Title";
+            labelStory2Title.Size = new Size(398, 25);
+            labelStory2Title.TabIndex = 17;
+            labelStory2Title.Text = "story 2 title";
+            labelStory2Title.TextAlign = ContentAlignment.TopCenter;
+            labelStory2Title.Click += labelStory2Title_Click;
+            // 
+            // labelStory2
+            // 
+            labelStory2.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            labelStory2.AutoSize = true;
+            labelStory2.Location = new Point(6, 25);
+            labelStory2.MaximumSize = new Size(380, 0);
+            labelStory2.Name = "labelStory2";
+            labelStory2.Size = new Size(42, 15);
+            labelStory2.TabIndex = 20;
+            labelStory2.Text = "story 2";
+            // 
+            // panel3
+            // 
+            panel3.AutoSize = true;
+            panel3.Controls.Add(labelStory1Title);
+            panel3.Controls.Add(labelStory1);
+            panel3.Dock = DockStyle.Top;
+            panel3.Location = new Point(0, 0);
+            panel3.Name = "panel3";
+            panel3.Size = new Size(403, 37);
+            panel3.TabIndex = 21;
+            // 
+            // labelStory1Title
+            // 
+            labelStory1Title.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            labelStory1Title.Font = new Font("Segoe UI Semibold", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            labelStory1Title.Location = new Point(3, 0);
+            labelStory1Title.Margin = new Padding(3, 11, 3, 0);
+            labelStory1Title.Name = "labelStory1Title";
+            labelStory1Title.Size = new Size(400, 22);
+            labelStory1Title.TabIndex = 18;
+            labelStory1Title.Text = "story 1 title";
+            labelStory1Title.TextAlign = ContentAlignment.TopCenter;
+            // 
+            // labelStory1
+            // 
+            labelStory1.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            labelStory1.AutoSize = true;
+            labelStory1.Location = new Point(6, 22);
+            labelStory1.MaximumSize = new Size(380, 0);
+            labelStory1.Name = "labelStory1";
+            labelStory1.Size = new Size(42, 15);
+            labelStory1.TabIndex = 19;
+            labelStory1.Text = "story 1";
             // 
             // buttonExportLore
             // 
@@ -534,15 +616,6 @@
             buttonFavoriteLore.UseVisualStyleBackColor = true;
             buttonFavoriteLore.Click += toggleFavorite_Click;
             // 
-            // labelStory2
-            // 
-            labelStory2.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-            labelStory2.Location = new Point(0, 359);
-            labelStory2.Name = "labelStory2";
-            labelStory2.Size = new Size(399, 185);
-            labelStory2.TabIndex = 20;
-            labelStory2.Text = "story 2";
-            // 
             // labelSeriesLore
             // 
             labelSeriesLore.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
@@ -564,27 +637,6 @@
             labelNameLore.Text = "name";
             labelNameLore.TextAlign = ContentAlignment.TopCenter;
             // 
-            // labelStory2Title
-            // 
-            labelStory2Title.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-            labelStory2Title.Font = new Font("Segoe UI Semibold", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            labelStory2Title.Location = new Point(0, 334);
-            labelStory2Title.Margin = new Padding(3, 11, 3, 0);
-            labelStory2Title.Name = "labelStory2Title";
-            labelStory2Title.Size = new Size(399, 25);
-            labelStory2Title.TabIndex = 17;
-            labelStory2Title.Text = "story 2 title";
-            labelStory2Title.TextAlign = ContentAlignment.TopCenter;
-            // 
-            // labelStory1
-            // 
-            labelStory1.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-            labelStory1.Location = new Point(0, 174);
-            labelStory1.Name = "labelStory1";
-            labelStory1.Size = new Size(399, 185);
-            labelStory1.TabIndex = 19;
-            labelStory1.Text = "story 1";
-            // 
             // labelDetail2Name
             // 
             labelDetail2Name.Anchor = AnchorStyles.Top | AnchorStyles.Right;
@@ -596,18 +648,6 @@
             labelDetail2Name.TabIndex = 15;
             labelDetail2Name.Text = "detail 2 name";
             labelDetail2Name.TextAlign = ContentAlignment.TopCenter;
-            // 
-            // labelStory1Title
-            // 
-            labelStory1Title.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-            labelStory1Title.Font = new Font("Segoe UI Semibold", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            labelStory1Title.Location = new Point(0, 152);
-            labelStory1Title.Margin = new Padding(3, 11, 3, 0);
-            labelStory1Title.Name = "labelStory1Title";
-            labelStory1Title.Size = new Size(400, 22);
-            labelStory1Title.TabIndex = 18;
-            labelStory1Title.Text = "story 1 title";
-            labelStory1Title.TextAlign = ContentAlignment.TopCenter;
             // 
             // labelDetail2
             // 
@@ -729,6 +769,12 @@
             tabLore.ResumeLayout(false);
             panel1.ResumeLayout(false);
             panel1.PerformLayout();
+            panel2.ResumeLayout(false);
+            panel2.PerformLayout();
+            panel4.ResumeLayout(false);
+            panel4.PerformLayout();
+            panel3.ResumeLayout(false);
+            panel3.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBoxRarityLore).EndInit();
             ((System.ComponentModel.ISupportInitialize)pictureBoxLore).EndInit();
             ResumeLayout(false);
@@ -790,5 +836,8 @@
         private SaveFileDialog saveFileExportCard;
         private Button buttonExportAbility;
         private Button buttonExportLore;
+        private Panel panel2;
+        private Panel panel4;
+        private Panel panel3;
     }
 }
