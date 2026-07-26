@@ -287,7 +287,10 @@ namespace CardViewer.Views
             if (set.Rarity == CardSet.RarityTier.Mythic)
             {
                 mythicCards.Add(set.Name, set);
-                treeViewCards.Nodes[1].Nodes.Add(new TreeNode(set.Name));
+                TreeNode newNode = new TreeNode(set.Name);
+                treeViewCards.Nodes[1].Nodes.Add(newNode);
+
+                treeViewCards.SelectedNode = newNode;
 
                 backgroundWorkerSaveData.RunWorkerAsync("m");
             }
@@ -314,6 +317,8 @@ namespace CardViewer.Views
                 }
                 TreeNode newNode = new TreeNode(RarityNames[set.Rarity]);
                 treeViewCards.Nodes[0].Nodes[nodeIndex].Nodes.Add(newNode);
+
+                treeViewCards.SelectedNode = newNode;
 
                 backgroundWorkerSaveData.RunWorkerAsync("n");
             }
