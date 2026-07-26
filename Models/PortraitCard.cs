@@ -4,7 +4,7 @@ using System.Text;
 
 namespace CardViewer.Models
 {
-    public class PortraitCard
+    public class PortraitCard : ICloneable
     {
         public string ImageFile { get; set; }
         public string? AnimFile { get; set; }
@@ -25,11 +25,16 @@ namespace CardViewer.Models
             Title = title;
         }
 
-        public PortraitCard(string imageFile, string title, string animFile)
+        public PortraitCard(string imageFile, string title, string? animFile)
         {
             ImageFile = imageFile;
             AnimFile = animFile;
             Title = title;
+        }
+
+        public object Clone()
+        {
+            return new PortraitCard(this.ImageFile, this.Title, this.AnimFile);
         }
     }
 }

@@ -5,7 +5,7 @@ using System.Text.Json.Serialization;
 
 namespace CardViewer.Models
 {
-    public class CardSet
+    public class CardSet : ICloneable
     {
         public string Name { get; set; }
         public string Series { get; set; }
@@ -35,6 +35,15 @@ namespace CardViewer.Models
             Portrait = portrait;
             Ability = ability;
             Lore = lore;
+        }
+
+        /// <summary>
+        /// Creates a deep clone of this object.
+        /// </summary>
+        /// <returns>The new clone object</returns>
+        public object Clone()
+        {
+            return new CardSet(this.Name, this.Series, this.Number, this.Rarity, (PortraitCard) this.Portrait.Clone(), (AbilityCard) this.Ability.Clone(), (LoreCard) this.Lore.Clone());
         }
 
         public enum RarityTier

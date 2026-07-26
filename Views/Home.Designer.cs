@@ -36,6 +36,7 @@
             cardDisplay = new TabControl();
             tabPortrait = new TabPage();
             panelPortrait = new Panel();
+            buttonExportPortrait = new Button();
             labelPortraitAnim = new Label();
             buttonDeletePortrait = new Button();
             pictureBoxRarityPortrait = new PictureBox();
@@ -47,6 +48,7 @@
             pictureBoxPortrait = new PictureBox();
             tabAbility = new TabPage();
             panelAbility = new Panel();
+            buttonExportAbility = new Button();
             labelAbilityAnim = new Label();
             buttonFavoriteAbility = new Button();
             buttonEditAbility = new Button();
@@ -59,6 +61,7 @@
             pictureBoxAbility = new PictureBox();
             tabLore = new TabPage();
             panel1 = new Panel();
+            buttonExportLore = new Button();
             labelLoreAnim = new Label();
             buttonDeleteLore = new Button();
             labelQuote = new Label();
@@ -80,6 +83,9 @@
             backgroundWorkerSaveData = new System.ComponentModel.BackgroundWorker();
             labelVersion = new Label();
             backgroundWorkerLoadImage = new System.ComponentModel.BackgroundWorker();
+            buttonImportCard = new Button();
+            openFileImportCard = new OpenFileDialog();
+            saveFileExportCard = new SaveFileDialog();
             cardDisplay.SuspendLayout();
             tabPortrait.SuspendLayout();
             panelPortrait.SuspendLayout();
@@ -107,7 +113,7 @@
             treeNode3.Name = "nodeFavoriteCards";
             treeNode3.Text = "Favorites";
             treeViewCards.Nodes.AddRange(new TreeNode[] { treeNode1, treeNode2, treeNode3 });
-            treeViewCards.Size = new Size(211, 696);
+            treeViewCards.Size = new Size(211, 665);
             treeViewCards.TabIndex = 1;
             treeViewCards.AfterSelect += treeViewCards_AfterSelect;
             treeViewCards.KeyPress += cardDisplay_KeyPress;
@@ -141,6 +147,7 @@
             // 
             // panelPortrait
             // 
+            panelPortrait.Controls.Add(buttonExportPortrait);
             panelPortrait.Controls.Add(labelPortraitAnim);
             panelPortrait.Controls.Add(buttonDeletePortrait);
             panelPortrait.Controls.Add(pictureBoxRarityPortrait);
@@ -154,6 +161,17 @@
             panelPortrait.Name = "panelPortrait";
             panelPortrait.Size = new Size(400, 727);
             panelPortrait.TabIndex = 8;
+            // 
+            // buttonExportPortrait
+            // 
+            buttonExportPortrait.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            buttonExportPortrait.Location = new Point(207, 666);
+            buttonExportPortrait.Name = "buttonExportPortrait";
+            buttonExportPortrait.Size = new Size(190, 25);
+            buttonExportPortrait.TabIndex = 22;
+            buttonExportPortrait.Text = "Export Card";
+            buttonExportPortrait.UseVisualStyleBackColor = true;
+            buttonExportPortrait.Click += exportCard_Click;
             // 
             // labelPortraitAnim
             // 
@@ -217,7 +235,7 @@
             buttonFavoritePortrait.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             buttonFavoritePortrait.Location = new Point(6, 666);
             buttonFavoritePortrait.Name = "buttonFavoritePortrait";
-            buttonFavoritePortrait.Size = new Size(391, 25);
+            buttonFavoritePortrait.Size = new Size(190, 25);
             buttonFavoritePortrait.TabIndex = 4;
             buttonFavoritePortrait.Text = "Add to Favorites";
             buttonFavoritePortrait.UseVisualStyleBackColor = true;
@@ -268,6 +286,7 @@
             // 
             // panelAbility
             // 
+            panelAbility.Controls.Add(buttonExportAbility);
             panelAbility.Controls.Add(labelAbilityAnim);
             panelAbility.Controls.Add(buttonFavoriteAbility);
             panelAbility.Controls.Add(buttonEditAbility);
@@ -283,6 +302,17 @@
             panelAbility.Size = new Size(400, 727);
             panelAbility.TabIndex = 15;
             // 
+            // buttonExportAbility
+            // 
+            buttonExportAbility.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            buttonExportAbility.Location = new Point(207, 666);
+            buttonExportAbility.Name = "buttonExportAbility";
+            buttonExportAbility.Size = new Size(190, 25);
+            buttonExportAbility.TabIndex = 23;
+            buttonExportAbility.Text = "Export Card";
+            buttonExportAbility.UseVisualStyleBackColor = true;
+            buttonExportAbility.Click += exportCard_Click;
+            // 
             // labelAbilityAnim
             // 
             labelAbilityAnim.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
@@ -297,7 +327,7 @@
             // 
             buttonFavoriteAbility.Location = new Point(6, 666);
             buttonFavoriteAbility.Name = "buttonFavoriteAbility";
-            buttonFavoriteAbility.Size = new Size(391, 25);
+            buttonFavoriteAbility.Size = new Size(190, 25);
             buttonFavoriteAbility.TabIndex = 10;
             buttonFavoriteAbility.Text = "Add to Favorites";
             buttonFavoriteAbility.UseVisualStyleBackColor = true;
@@ -402,6 +432,7 @@
             // 
             // panel1
             // 
+            panel1.Controls.Add(buttonExportLore);
             panel1.Controls.Add(labelLoreAnim);
             panel1.Controls.Add(buttonDeleteLore);
             panel1.Controls.Add(labelQuote);
@@ -423,6 +454,17 @@
             panel1.Name = "panel1";
             panel1.Size = new Size(400, 727);
             panel1.TabIndex = 23;
+            // 
+            // buttonExportLore
+            // 
+            buttonExportLore.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            buttonExportLore.Location = new Point(207, 666);
+            buttonExportLore.Name = "buttonExportLore";
+            buttonExportLore.Size = new Size(190, 25);
+            buttonExportLore.TabIndex = 24;
+            buttonExportLore.Text = "Export Card";
+            buttonExportLore.UseVisualStyleBackColor = true;
+            buttonExportLore.Click += exportCard_Click;
             // 
             // labelLoreAnim
             // 
@@ -486,7 +528,7 @@
             buttonFavoriteLore.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             buttonFavoriteLore.Location = new Point(6, 666);
             buttonFavoriteLore.Name = "buttonFavoriteLore";
-            buttonFavoriteLore.Size = new Size(391, 25);
+            buttonFavoriteLore.Size = new Size(190, 25);
             buttonFavoriteLore.TabIndex = 10;
             buttonFavoriteLore.Text = "Add to Favorites";
             buttonFavoriteLore.UseVisualStyleBackColor = true;
@@ -610,7 +652,7 @@
             // buttonAddCard
             // 
             buttonAddCard.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
-            buttonAddCard.Location = new Point(17, 714);
+            buttonAddCard.Location = new Point(17, 683);
             buttonAddCard.Name = "buttonAddCard";
             buttonAddCard.Size = new Size(211, 25);
             buttonAddCard.TabIndex = 5;
@@ -635,12 +677,35 @@
             // 
             backgroundWorkerLoadImage.DoWork += backgroundWorkerLoadImage_DoWork;
             // 
+            // buttonImportCard
+            // 
+            buttonImportCard.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
+            buttonImportCard.Location = new Point(17, 714);
+            buttonImportCard.Name = "buttonImportCard";
+            buttonImportCard.Size = new Size(211, 25);
+            buttonImportCard.TabIndex = 7;
+            buttonImportCard.Text = "Import Card";
+            buttonImportCard.UseVisualStyleBackColor = true;
+            buttonImportCard.Click += buttonImportCard_Click;
+            // 
+            // openFileImportCard
+            // 
+            openFileImportCard.InitialDirectory = "%userhome%";
+            // 
+            // saveFileExportCard
+            // 
+            saveFileExportCard.DefaultExt = "json";
+            saveFileExportCard.Filter = "JSON files|*.json";
+            saveFileExportCard.InitialDirectory = "%userhome%";
+            saveFileExportCard.Title = "Export Card";
+            // 
             // Home
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = SystemColors.Control;
             ClientSize = new Size(1184, 761);
+            Controls.Add(buttonImportCard);
             Controls.Add(labelVersion);
             Controls.Add(buttonAddCard);
             Controls.Add(treeViewCards);
@@ -719,5 +784,11 @@
         private Label labelLoreAnim;
         private Label labelVersion;
         private System.ComponentModel.BackgroundWorker backgroundWorkerLoadImage;
+        private Button buttonImportCard;
+        private Button buttonExportPortrait;
+        private OpenFileDialog openFileImportCard;
+        private SaveFileDialog saveFileExportCard;
+        private Button buttonExportAbility;
+        private Button buttonExportLore;
     }
 }

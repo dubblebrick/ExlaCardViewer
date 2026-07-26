@@ -43,6 +43,8 @@ namespace CardViewer.Views
                 inputCharName.Enabled = false;
                 buttonRarityUp.Enabled = false;
                 buttonRarityDown.Enabled = false;
+
+                this.Text = "Edit Card - ExLa Card Viewer";
             }
 
             rarity = (int)set.Rarity;
@@ -149,13 +151,15 @@ namespace CardViewer.Views
 
             if (rarity == 6)
             {
-                inputCharSeries.Text = "Mythic";
-                inputCharSeries.Enabled = false;
+                inputCharNum.Value = 1;
+                inputCharNum.Visible = false;
+                labelNumber.Visible = false;
             }
             else
             {
-                inputCharSeries.Text = string.Empty;
-                inputCharSeries.Enabled = true;
+                inputCharNum.Value = 0;
+                inputCharNum.Visible = true;
+                labelNumber.Visible = true;
             }
         }
 

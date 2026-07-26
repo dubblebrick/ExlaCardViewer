@@ -132,7 +132,7 @@ namespace CardViewer.Views
                 treeViewCards.Nodes[1].Nodes.Add(new TreeNode(setName));
             }
 
-            foreach (var card in favoriteCards)
+            foreach (var card in favoriteCards.Order())
             {
                 if (corruptCards.Contains(card))
                 {
@@ -209,6 +209,11 @@ namespace CardViewer.Views
             return true;
         }
 
+        /// <summary>
+        /// Sorter method that generates a sorting key for a card set
+        /// </summary>
+        /// <param name="name">The "Name" property of a card set</param>
+        /// <returns>A sorting key based on the data of the card set</returns>
         private string SortCards(string name)
         {
             var subDict = normalCards[name];
@@ -216,6 +221,11 @@ namespace CardViewer.Views
             return $"{card.Series}|{card.Number}";
         }
 
+        /// <summary>
+        /// Event handler for Add Card button.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void buttonAddCard_Click(object sender, EventArgs e)
         {
             CardSet newSet = new CardSet();
@@ -223,43 +233,134 @@ namespace CardViewer.Views
             DialogResult result = editCardForm.ShowDialog();
             if (result == DialogResult.OK)
             {
-                if (newSet.Rarity == CardSet.RarityTier.Mythic)
-                {
-                    mythicCards.Add(newSet.Name, newSet);
-                    treeViewCards.Nodes[1].Nodes.Add(new TreeNode(newSet.Name));
-
-                    backgroundWorkerSaveData.RunWorkerAsync("m");
-                }
-                else
-                {
-                    int nodeIndex = -1;
-                    if (normalCards.TryGetValue(newSet.Name, out var innerDict))
-                    {
-                        innerDict.Add(newSet.Rarity, newSet);
-                        foreach (TreeNode node in treeViewCards.Nodes[0].Nodes)
-                        {
-                            if (node.Text == newSet.Name)
-                            {
-                                nodeIndex = treeViewCards.Nodes[0].Nodes.IndexOf(node);
-                                break;
-                            }
-                        }
-                    }
-                    else
-                    {
-                        normalCards.Add(newSet.Name, new Dictionary<CardSet.RarityTier, CardSet>());
-                        normalCards[newSet.Name].Add(newSet.Rarity, newSet);
-                        nodeIndex = treeViewCards.Nodes[0].Nodes.Add(new TreeNode(newSet.Name));
-                    }
-                    TreeNode newNode = new TreeNode(RarityNames[newSet.Rarity]);
-                    treeViewCards.Nodes[0].Nodes[nodeIndex].Nodes.Add(newNode);
-
-                    backgroundWorkerSaveData.RunWorkerAsync("n");
-                }
-                treeViewCards.Refresh();
+                AddCard(newSet);
             }
         }
 
+        /// <summary>
+        /// Event handler for Import Card button.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void buttonImportCard_Click(object sender, EventArgs e)
+        {
+            if (openFileImportCard.ShowDialog() == DialogResult.OK)
+            {
+                if (Path.GetExtension(openFileImportCard.FileName) != ".json")
+                {
+                    Alert form = new Alert("Card data must be a .json file.");
+                    form.ShowDialog();
+                }
+                else
+                {
+                    CardSet? newSet = null;
+                    using (Stream stream = openFileImportCard.OpenFile())
+                    {
+                        if (stream != null)
+                        {
+                            newSet = JsonSerializer.Deserialize<CardSet>(stream);
+                        }
+                    }
+
+                    if (newSet == null)
+                    {
+                        Alert form = new Alert("Invalid card data.");
+                        form.ShowDialog();
+                        return;
+                    }
+
+                    Form editCardForm = new EditCardSet(ref newSet);
+                    if (editCardForm.ShowDialog() == DialogResult.OK)
+                    {
+                        AddCard(newSet);
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Helper method to add a card set to the underlying data structure as well as the display.
+        /// </summary>
+        /// <param name="set">The set to add</param>
+        private void AddCard(CardSet set)
+        {
+            if (set.Rarity == CardSet.RarityTier.Mythic)
+            {
+                mythicCards.Add(set.Name, set);
+                treeViewCards.Nodes[1].Nodes.Add(new TreeNode(set.Name));
+
+                backgroundWorkerSaveData.RunWorkerAsync("m");
+            }
+            else
+            {
+                int nodeIndex = -1;
+                if (normalCards.TryGetValue(set.Name, out var innerDict))
+                {
+                    innerDict.Add(set.Rarity, set);
+                    foreach (TreeNode node in treeViewCards.Nodes[0].Nodes)
+                    {
+                        if (node.Text == set.Name)
+                        {
+                            nodeIndex = treeViewCards.Nodes[0].Nodes.IndexOf(node);
+                            break;
+                        }
+                    }
+                }
+                else
+                {
+                    normalCards.Add(set.Name, new Dictionary<CardSet.RarityTier, CardSet>());
+                    normalCards[set.Name].Add(set.Rarity, set);
+                    nodeIndex = treeViewCards.Nodes[0].Nodes.Add(new TreeNode(set.Name));
+                }
+                TreeNode newNode = new TreeNode(RarityNames[set.Rarity]);
+                treeViewCards.Nodes[0].Nodes[nodeIndex].Nodes.Add(newNode);
+
+                backgroundWorkerSaveData.RunWorkerAsync("n");
+            }
+            treeViewCards.Refresh();
+        }
+
+        /// <summary>
+        /// Event handler for Export Card buttons.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+#pragma warning disable CS8600, CS8602
+        private void exportCard_Click(object sender, EventArgs e)
+        {
+            if (selectedCard == null)
+            {
+                return;
+            }
+            CardSet newCardSet = selectedCard.Clone() as CardSet;
+
+            newCardSet.Portrait.ImageFile = "";
+            newCardSet.Portrait.AnimFile = null;
+            newCardSet.Ability.ImageFile = "";
+            newCardSet.Ability.AnimFile = null;
+            newCardSet.Lore.ImageFile = "";
+            newCardSet.Lore.AnimFile = null;
+
+            saveFileExportCard.FileName = $"{newCardSet.Name}_{newCardSet.Rarity}.json";
+            if (saveFileExportCard.ShowDialog() == DialogResult.OK)
+            {
+                using (var stream = saveFileExportCard.OpenFile())
+                {
+                    if (stream != null)
+                    {
+                        JsonSerializer.Serialize(stream, newCardSet);
+                    }
+                }
+            }
+
+        }
+#pragma warning restore CS8600, CS8602
+
+        /// <summary>
+        /// Do Work event handler for the save data background worker
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void backgroundWorkerSaveData_DoWork(object sender, DoWorkEventArgs e)
         {
             switch (e.Argument as string)
@@ -299,6 +400,12 @@ namespace CardViewer.Views
             }
         }
 
+        /// <summary>
+        /// Do Work event handler for the image loading background worker
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        /// <exception cref="ArgumentException"></exception>
         private void backgroundWorkerLoadImage_DoWork(object sender, DoWorkEventArgs e)
         {
             if (e.Argument == null || e.Argument is not CardSet)
@@ -363,6 +470,11 @@ namespace CardViewer.Views
             }
         }
 
+        /// <summary>
+        /// Item selection event handler for the tree view
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         // disabling null reference warnings here since most things are implicitly null checked and the compiler isn't good at catching that
 #pragma warning disable CS8600, CS8602
         private void treeViewCards_AfterSelect(object sender, TreeViewEventArgs e)
@@ -420,6 +532,11 @@ namespace CardViewer.Views
         }
 #pragma warning restore CS8600, CS8602
 
+        /// <summary>
+        /// Event handler for the Edit Card buttons.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void editCard_Click(object sender, EventArgs e)
         {
             if (selectedCard == null)
@@ -450,6 +567,11 @@ namespace CardViewer.Views
             }
         }
 
+        /// <summary>
+        /// Event handler for the Delete Card buttons.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void deleteCard_Click(object sender, EventArgs e)
         {
             if (selectedCard == null)
@@ -537,6 +659,11 @@ namespace CardViewer.Views
             backgroundWorkerSaveData.RunWorkerAsync("a");
         }
 
+        /// <summary>
+        /// Event handler for the Toggle Favorite buttons.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void toggleFavorite_Click(object sender, EventArgs e)
         {
             if (selectedCard == null)
@@ -574,6 +701,10 @@ namespace CardViewer.Views
             backgroundWorkerSaveData.RunWorkerAsync("f");
         }
 
+        /// <summary>
+        /// Helper method that updates the display with the data for the currently selected card.
+        /// </summary>
+        /// <exception cref="InvalidOperationException">if no card is currently selected</exception>
         private void UpdateDisplay()
         {
             if (selectedCard == null)
@@ -583,7 +714,7 @@ namespace CardViewer.Views
 
             backgroundWorkerLoadImage.RunWorkerAsync(selectedCard);
 
-            string series = $"{selectedCard.Series} Series #{selectedCard.Number}";
+            string series = selectedCard.Rarity == CardSet.RarityTier.Mythic ? $"Mythic - {selectedCard.Series}" : $"{selectedCard.Series} Series #{selectedCard.Number}";
             labelSeriesPortrait.Text = series;
             labelSeriesAbility.Text = series;
             labelSeriesLore.Text = series;
@@ -636,6 +767,11 @@ namespace CardViewer.Views
             cardDisplay.Refresh();
         }
 
+        /// <summary>
+        /// Event handler for switching tabs on the tab display
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void cardDisplay_Selecting(object sender, EventArgs e)
         {
             if (cardAnimated)
@@ -644,6 +780,11 @@ namespace CardViewer.Views
             }
         }
 
+        /// <summary>
+        /// Event handler to catch space bar press events
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void cardDisplay_KeyPress(object sender, KeyPressEventArgs e)
         {
             if (e.KeyChar == ' ')
@@ -659,6 +800,9 @@ namespace CardViewer.Views
             }
         }
 
+        /// <summary>
+        /// Helper method that changes the display to show a card animation, if available
+        /// </summary>
         private void StartAnimation()
         {
             if (selectedCard == null || cardAnimated)
@@ -691,6 +835,9 @@ namespace CardViewer.Views
             cardAnimated = true;
         }
 
+        /// <summary>
+        /// Helper method to reset all card animations.
+        /// </summary>
         private void StopAnimation()
         {
             if (selectedCard == null || !cardAnimated)

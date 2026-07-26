@@ -182,9 +182,9 @@
             labelSeries.AutoSize = true;
             labelSeries.Location = new Point(252, 83);
             labelSeries.Name = "labelSeries";
-            labelSeries.Size = new Size(37, 15);
+            labelSeries.Size = new Size(42, 15);
             labelSeries.TabIndex = 10;
-            labelSeries.Text = "Series";
+            labelSeries.Text = "Series*";
             // 
             // inputCharSeries
             // 
@@ -199,18 +199,18 @@
             labelNumber.AutoSize = true;
             labelNumber.Location = new Point(252, 134);
             labelNumber.Name = "labelNumber";
-            labelNumber.Size = new Size(102, 15);
+            labelNumber.Size = new Size(107, 15);
             labelNumber.TabIndex = 7;
-            labelNumber.Text = "Collector Number";
+            labelNumber.Text = "Collector Number*";
             // 
             // labelName
             // 
             labelName.AutoSize = true;
             labelName.Location = new Point(252, 26);
             labelName.Name = "labelName";
-            labelName.Size = new Size(39, 15);
+            labelName.Size = new Size(44, 15);
             labelName.TabIndex = 4;
-            labelName.Text = "Name";
+            labelName.Text = "Name*";
             // 
             // buttonRarityDown
             // 
@@ -787,7 +787,7 @@
             Icon = (Icon)resources.GetObject("$this.Icon");
             MaximizeBox = false;
             Name = "EditCardSet";
-            Text = "Edit Card Set - ExLa Card Viewer";
+            Text = "New Card - ExLa Card Viewer";
             tabControl1.ResumeLayout(false);
             tabDetails.ResumeLayout(false);
             tabDetails.PerformLayout();

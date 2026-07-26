@@ -4,7 +4,7 @@ using System.Text;
 
 namespace CardViewer.Models
 {
-    public class AbilityCard
+    public class AbilityCard : ICloneable
     {
         /// <summary>
         /// Path to card image
@@ -31,12 +31,17 @@ namespace CardViewer.Models
             AbilityDesc = abilityDesc;
         }
 
-        public AbilityCard(string imageFile, string abilityName, string abilityDesc, string animFile)
+        public AbilityCard(string imageFile, string abilityName, string abilityDesc, string? animFile)
         {
             ImageFile = imageFile;
             AbilityName = abilityName;
             AbilityDesc = abilityDesc;
             AnimFile = animFile;
+        }
+
+        public object Clone()
+        {
+            return new AbilityCard(this.ImageFile, this.AbilityName, this.AbilityDesc, this.AnimFile);
         }
     }
 }
