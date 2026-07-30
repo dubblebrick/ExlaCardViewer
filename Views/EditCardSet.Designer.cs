@@ -238,7 +238,7 @@
             inputCharName.Name = "inputCharName";
             inputCharName.Size = new Size(134, 23);
             inputCharName.TabIndex = 6;
-            inputCharName.TextChanged += TextboxUpdatedEvent;
+            inputCharName.TextChanged += inputCharName_TextChanged;
             // 
             // inputCharNum
             // 
@@ -787,6 +787,7 @@
             Icon = (Icon)resources.GetObject("$this.Icon");
             MaximizeBox = false;
             Name = "EditCardSet";
+            StartPosition = FormStartPosition.CenterParent;
             Text = "New Card - ExLa Card Viewer";
             tabControl1.ResumeLayout(false);
             tabDetails.ResumeLayout(false);

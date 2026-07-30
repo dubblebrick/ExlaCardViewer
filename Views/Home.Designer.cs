@@ -33,55 +33,29 @@
             TreeNode treeNode3 = new TreeNode("Favorites");
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Home));
             treeViewCards = new TreeView();
-            cardDisplay = new TabControl();
-            tabPortrait = new TabPage();
-            panelPortrait = new Panel();
-            buttonExportPortrait = new Button();
-            labelPortraitAnim = new Label();
-            buttonDeletePortrait = new Button();
-            pictureBoxRarityPortrait = new PictureBox();
-            buttonEditPortrait = new Button();
-            labelPortraitTitle = new Label();
-            buttonFavoritePortrait = new Button();
-            labelNamePortrait = new Label();
-            labelSeriesPortrait = new Label();
-            pictureBoxPortrait = new PictureBox();
-            tabAbility = new TabPage();
-            panelAbility = new Panel();
-            buttonExportAbility = new Button();
-            labelAbilityAnim = new Label();
-            buttonFavoriteAbility = new Button();
-            buttonEditAbility = new Button();
-            buttonDeleteAbility = new Button();
-            pictureBoxRarityAbility = new PictureBox();
-            labelAbility = new Label();
-            labelAbilityName = new Label();
-            labelNameAbility = new Label();
-            labelSeriesAbility = new Label();
-            pictureBoxAbility = new PictureBox();
-            tabLore = new TabPage();
-            panel1 = new Panel();
-            panel2 = new Panel();
-            panel4 = new Panel();
-            labelStory2Title = new Label();
-            labelStory2 = new Label();
-            panel3 = new Panel();
-            labelStory1Title = new Label();
-            labelStory1 = new Label();
-            buttonExportLore = new Button();
-            labelLoreAnim = new Label();
-            buttonDeleteLore = new Button();
+            pictureBoxCard = new PictureBox();
+            panelCardDetails = new Panel();
+            panelCardText = new Panel();
+            labelSeries = new Label();
             labelQuote = new Label();
-            buttonEditLore = new Button();
-            pictureBoxRarityLore = new PictureBox();
-            buttonFavoriteLore = new Button();
-            labelSeriesLore = new Label();
-            labelNameLore = new Label();
-            labelDetail2Name = new Label();
+            labelBody2 = new Label();
+            labelHeader2 = new Label();
+            labelBody1 = new Label();
+            labelHeader1 = new Label();
+            panelLoreDetails = new Panel();
             labelDetail2 = new Label();
-            labelDetail1Name = new Label();
             labelDetail1 = new Label();
-            pictureBoxLore = new PictureBox();
+            labelDetail2Name = new Label();
+            labelDetail1Name = new Label();
+            panelCardButtons = new Panel();
+            labelAnimAvailable = new Label();
+            buttonExport = new Button();
+            buttonDelete = new Button();
+            buttonEdit = new Button();
+            buttonFavorite = new Button();
+            pictureBoxRarity = new PictureBox();
+            panelName = new Panel();
+            labelCharName = new Label();
             buttonAddCard = new Button();
             backgroundWorkerSaveData = new System.ComponentModel.BackgroundWorker();
             labelVersion = new Label();
@@ -89,28 +63,28 @@
             buttonImportCard = new Button();
             openFileImportCard = new OpenFileDialog();
             saveFileExportCard = new SaveFileDialog();
-            cardDisplay.SuspendLayout();
-            tabPortrait.SuspendLayout();
-            panelPortrait.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)pictureBoxRarityPortrait).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)pictureBoxPortrait).BeginInit();
-            tabAbility.SuspendLayout();
-            panelAbility.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)pictureBoxRarityAbility).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)pictureBoxAbility).BeginInit();
-            tabLore.SuspendLayout();
-            panel1.SuspendLayout();
-            panel2.SuspendLayout();
-            panel4.SuspendLayout();
-            panel3.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)pictureBoxRarityLore).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)pictureBoxLore).BeginInit();
+            panelSidebar = new Panel();
+            panelCardDisplay = new Panel();
+            panelButtons = new Panel();
+            buttonLore = new Button();
+            buttonAbility = new Button();
+            buttonPortrait = new Button();
+            ((System.ComponentModel.ISupportInitialize)pictureBoxCard).BeginInit();
+            panelCardDetails.SuspendLayout();
+            panelCardText.SuspendLayout();
+            panelLoreDetails.SuspendLayout();
+            panelCardButtons.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)pictureBoxRarity).BeginInit();
+            panelName.SuspendLayout();
+            panelSidebar.SuspendLayout();
+            panelCardDisplay.SuspendLayout();
+            panelButtons.SuspendLayout();
             SuspendLayout();
             // 
             // treeViewCards
             // 
             treeViewCards.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left;
-            treeViewCards.Location = new Point(17, 12);
+            treeViewCards.Location = new Point(15, 12);
             treeViewCards.Name = "treeViewCards";
             treeNode1.Name = "nodeStandardCards";
             treeNode1.Text = "Standard Cards";
@@ -119,585 +93,335 @@
             treeNode3.Name = "nodeFavoriteCards";
             treeNode3.Text = "Favorites";
             treeViewCards.Nodes.AddRange(new TreeNode[] { treeNode1, treeNode2, treeNode3 });
-            treeViewCards.Size = new Size(211, 665);
+            treeViewCards.Size = new Size(210, 625);
             treeViewCards.TabIndex = 1;
             treeViewCards.AfterSelect += treeViewCards_AfterSelect;
-            treeViewCards.KeyPress += cardDisplay_KeyPress;
-            // 
-            // cardDisplay
-            // 
-            cardDisplay.Controls.Add(tabPortrait);
-            cardDisplay.Controls.Add(tabAbility);
-            cardDisplay.Controls.Add(tabLore);
-            cardDisplay.Dock = DockStyle.Right;
-            cardDisplay.Location = new Point(250, 0);
-            cardDisplay.Name = "cardDisplay";
-            cardDisplay.SelectedIndex = 0;
-            cardDisplay.Size = new Size(934, 761);
-            cardDisplay.TabIndex = 3;
-            cardDisplay.Visible = false;
-            cardDisplay.Selecting += cardDisplay_Selecting;
-            cardDisplay.KeyPress += cardDisplay_KeyPress;
-            // 
-            // tabPortrait
-            // 
-            tabPortrait.Controls.Add(panelPortrait);
-            tabPortrait.Controls.Add(pictureBoxPortrait);
-            tabPortrait.Location = new Point(4, 24);
-            tabPortrait.Name = "tabPortrait";
-            tabPortrait.Padding = new Padding(3);
-            tabPortrait.Size = new Size(926, 733);
-            tabPortrait.TabIndex = 0;
-            tabPortrait.Text = "Portrait";
-            tabPortrait.UseVisualStyleBackColor = true;
-            // 
-            // panelPortrait
-            // 
-            panelPortrait.Controls.Add(buttonExportPortrait);
-            panelPortrait.Controls.Add(labelPortraitAnim);
-            panelPortrait.Controls.Add(buttonDeletePortrait);
-            panelPortrait.Controls.Add(pictureBoxRarityPortrait);
-            panelPortrait.Controls.Add(buttonEditPortrait);
-            panelPortrait.Controls.Add(labelPortraitTitle);
-            panelPortrait.Controls.Add(buttonFavoritePortrait);
-            panelPortrait.Controls.Add(labelNamePortrait);
-            panelPortrait.Controls.Add(labelSeriesPortrait);
-            panelPortrait.Dock = DockStyle.Fill;
-            panelPortrait.Location = new Point(523, 3);
-            panelPortrait.Name = "panelPortrait";
-            panelPortrait.Size = new Size(400, 727);
-            panelPortrait.TabIndex = 8;
-            // 
-            // buttonExportPortrait
-            // 
-            buttonExportPortrait.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            buttonExportPortrait.Location = new Point(207, 666);
-            buttonExportPortrait.Name = "buttonExportPortrait";
-            buttonExportPortrait.Size = new Size(190, 25);
-            buttonExportPortrait.TabIndex = 22;
-            buttonExportPortrait.Text = "Export Card";
-            buttonExportPortrait.UseVisualStyleBackColor = true;
-            buttonExportPortrait.Click += exportCard_Click;
-            // 
-            // labelPortraitAnim
-            // 
-            labelPortraitAnim.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
-            labelPortraitAnim.AutoSize = true;
-            labelPortraitAnim.Location = new Point(6, 648);
-            labelPortraitAnim.Name = "labelPortraitAnim";
-            labelPortraitAnim.Size = new Size(311, 15);
-            labelPortraitAnim.TabIndex = 21;
-            labelPortraitAnim.Text = "Animated card available! Press space to toggle animation.";
-            // 
-            // buttonDeletePortrait
-            // 
-            buttonDeletePortrait.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
-            buttonDeletePortrait.Location = new Point(207, 697);
-            buttonDeletePortrait.Margin = new Padding(3, 3, 6, 3);
-            buttonDeletePortrait.Name = "buttonDeletePortrait";
-            buttonDeletePortrait.Size = new Size(190, 25);
-            buttonDeletePortrait.TabIndex = 6;
-            buttonDeletePortrait.Text = "Delete Card";
-            buttonDeletePortrait.UseVisualStyleBackColor = true;
-            buttonDeletePortrait.Click += deleteCard_Click;
-            // 
-            // pictureBoxRarityPortrait
-            // 
-            pictureBoxRarityPortrait.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-            pictureBoxRarityPortrait.InitialImage = Properties.Resources.rarityStar_Rare;
-            pictureBoxRarityPortrait.Location = new Point(0, 35);
-            pictureBoxRarityPortrait.Name = "pictureBoxRarityPortrait";
-            pictureBoxRarityPortrait.Size = new Size(400, 25);
-            pictureBoxRarityPortrait.SizeMode = PictureBoxSizeMode.CenterImage;
-            pictureBoxRarityPortrait.TabIndex = 20;
-            pictureBoxRarityPortrait.TabStop = false;
-            // 
-            // buttonEditPortrait
-            // 
-            buttonEditPortrait.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
-            buttonEditPortrait.Location = new Point(6, 697);
-            buttonEditPortrait.Margin = new Padding(6, 3, 3, 3);
-            buttonEditPortrait.Name = "buttonEditPortrait";
-            buttonEditPortrait.Size = new Size(190, 25);
-            buttonEditPortrait.TabIndex = 5;
-            buttonEditPortrait.Text = "Edit Card";
-            buttonEditPortrait.UseVisualStyleBackColor = true;
-            buttonEditPortrait.Click += editCard_Click;
-            // 
-            // labelPortraitTitle
-            // 
-            labelPortraitTitle.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-            labelPortraitTitle.Font = new Font("Segoe UI Semibold", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            labelPortraitTitle.Location = new Point(0, 104);
-            labelPortraitTitle.Margin = new Padding(3, 11, 3, 0);
-            labelPortraitTitle.Name = "labelPortraitTitle";
-            labelPortraitTitle.Size = new Size(400, 22);
-            labelPortraitTitle.TabIndex = 7;
-            labelPortraitTitle.Text = "portrait title";
-            labelPortraitTitle.TextAlign = ContentAlignment.TopCenter;
-            // 
-            // buttonFavoritePortrait
-            // 
-            buttonFavoritePortrait.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            buttonFavoritePortrait.Location = new Point(6, 666);
-            buttonFavoritePortrait.Name = "buttonFavoritePortrait";
-            buttonFavoritePortrait.Size = new Size(190, 25);
-            buttonFavoritePortrait.TabIndex = 4;
-            buttonFavoritePortrait.Text = "Add to Favorites";
-            buttonFavoritePortrait.UseVisualStyleBackColor = true;
-            buttonFavoritePortrait.Click += toggleFavorite_Click;
-            // 
-            // labelNamePortrait
-            // 
-            labelNamePortrait.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-            labelNamePortrait.Font = new Font("Segoe UI", 15.75F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            labelNamePortrait.Location = new Point(0, 63);
-            labelNamePortrait.Name = "labelNamePortrait";
-            labelNamePortrait.Size = new Size(400, 30);
-            labelNamePortrait.TabIndex = 1;
-            labelNamePortrait.Text = "name";
-            labelNamePortrait.TextAlign = ContentAlignment.TopCenter;
-            // 
-            // labelSeriesPortrait
-            // 
-            labelSeriesPortrait.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-            labelSeriesPortrait.Location = new Point(0, 0);
-            labelSeriesPortrait.Name = "labelSeriesPortrait";
-            labelSeriesPortrait.Size = new Size(400, 15);
-            labelSeriesPortrait.TabIndex = 2;
-            labelSeriesPortrait.Text = "series";
-            labelSeriesPortrait.TextAlign = ContentAlignment.TopRight;
-            // 
-            // pictureBoxPortrait
-            // 
-            pictureBoxPortrait.Dock = DockStyle.Left;
-            pictureBoxPortrait.Location = new Point(3, 3);
-            pictureBoxPortrait.Name = "pictureBoxPortrait";
-            pictureBoxPortrait.Size = new Size(520, 727);
-            pictureBoxPortrait.SizeMode = PictureBoxSizeMode.Zoom;
-            pictureBoxPortrait.TabIndex = 0;
-            pictureBoxPortrait.TabStop = false;
-            // 
-            // tabAbility
-            // 
-            tabAbility.Controls.Add(panelAbility);
-            tabAbility.Controls.Add(pictureBoxAbility);
-            tabAbility.Location = new Point(4, 24);
-            tabAbility.Name = "tabAbility";
-            tabAbility.Padding = new Padding(3);
-            tabAbility.Size = new Size(926, 733);
-            tabAbility.TabIndex = 1;
-            tabAbility.Text = "Ability";
-            tabAbility.UseVisualStyleBackColor = true;
-            // 
-            // panelAbility
-            // 
-            panelAbility.Controls.Add(buttonExportAbility);
-            panelAbility.Controls.Add(labelAbilityAnim);
-            panelAbility.Controls.Add(buttonFavoriteAbility);
-            panelAbility.Controls.Add(buttonEditAbility);
-            panelAbility.Controls.Add(buttonDeleteAbility);
-            panelAbility.Controls.Add(pictureBoxRarityAbility);
-            panelAbility.Controls.Add(labelAbility);
-            panelAbility.Controls.Add(labelAbilityName);
-            panelAbility.Controls.Add(labelNameAbility);
-            panelAbility.Controls.Add(labelSeriesAbility);
-            panelAbility.Dock = DockStyle.Fill;
-            panelAbility.Location = new Point(523, 3);
-            panelAbility.Name = "panelAbility";
-            panelAbility.Size = new Size(400, 727);
-            panelAbility.TabIndex = 15;
-            // 
-            // buttonExportAbility
-            // 
-            buttonExportAbility.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            buttonExportAbility.Location = new Point(207, 666);
-            buttonExportAbility.Name = "buttonExportAbility";
-            buttonExportAbility.Size = new Size(190, 25);
-            buttonExportAbility.TabIndex = 23;
-            buttonExportAbility.Text = "Export Card";
-            buttonExportAbility.UseVisualStyleBackColor = true;
-            buttonExportAbility.Click += exportCard_Click;
-            // 
-            // labelAbilityAnim
-            // 
-            labelAbilityAnim.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
-            labelAbilityAnim.AutoSize = true;
-            labelAbilityAnim.Location = new Point(6, 648);
-            labelAbilityAnim.Name = "labelAbilityAnim";
-            labelAbilityAnim.Size = new Size(311, 15);
-            labelAbilityAnim.TabIndex = 22;
-            labelAbilityAnim.Text = "Animated card available! Press space to toggle animation.";
-            // 
-            // buttonFavoriteAbility
-            // 
-            buttonFavoriteAbility.Location = new Point(6, 666);
-            buttonFavoriteAbility.Name = "buttonFavoriteAbility";
-            buttonFavoriteAbility.Size = new Size(190, 25);
-            buttonFavoriteAbility.TabIndex = 10;
-            buttonFavoriteAbility.Text = "Add to Favorites";
-            buttonFavoriteAbility.UseVisualStyleBackColor = true;
-            buttonFavoriteAbility.Click += toggleFavorite_Click;
-            // 
-            // buttonEditAbility
-            // 
-            buttonEditAbility.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
-            buttonEditAbility.Location = new Point(6, 697);
-            buttonEditAbility.Margin = new Padding(6, 3, 3, 3);
-            buttonEditAbility.Name = "buttonEditAbility";
-            buttonEditAbility.Size = new Size(190, 25);
-            buttonEditAbility.TabIndex = 11;
-            buttonEditAbility.Text = "Edit Card";
-            buttonEditAbility.UseVisualStyleBackColor = true;
-            buttonEditAbility.Click += editCard_Click;
-            // 
-            // buttonDeleteAbility
-            // 
-            buttonDeleteAbility.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
-            buttonDeleteAbility.Location = new Point(207, 697);
-            buttonDeleteAbility.Margin = new Padding(3, 3, 6, 3);
-            buttonDeleteAbility.Name = "buttonDeleteAbility";
-            buttonDeleteAbility.Size = new Size(190, 25);
-            buttonDeleteAbility.TabIndex = 12;
-            buttonDeleteAbility.Text = "Delete Card";
-            buttonDeleteAbility.UseVisualStyleBackColor = true;
-            buttonDeleteAbility.Click += deleteCard_Click;
-            // 
-            // pictureBoxRarityAbility
-            // 
-            pictureBoxRarityAbility.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-            pictureBoxRarityAbility.InitialImage = Properties.Resources.rarityStar_Rare;
-            pictureBoxRarityAbility.Location = new Point(0, 35);
-            pictureBoxRarityAbility.Name = "pictureBoxRarityAbility";
-            pictureBoxRarityAbility.Size = new Size(400, 25);
-            pictureBoxRarityAbility.SizeMode = PictureBoxSizeMode.CenterImage;
-            pictureBoxRarityAbility.TabIndex = 21;
-            pictureBoxRarityAbility.TabStop = false;
-            // 
-            // labelAbility
-            // 
-            labelAbility.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-            labelAbility.Location = new Point(0, 126);
-            labelAbility.Name = "labelAbility";
-            labelAbility.Size = new Size(400, 200);
-            labelAbility.TabIndex = 14;
-            labelAbility.Text = "Ability";
-            // 
-            // labelAbilityName
-            // 
-            labelAbilityName.Font = new Font("Segoe UI Semibold", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            labelAbilityName.Location = new Point(0, 104);
-            labelAbilityName.Margin = new Padding(3, 11, 3, 0);
-            labelAbilityName.Name = "labelAbilityName";
-            labelAbilityName.Size = new Size(400, 22);
-            labelAbilityName.TabIndex = 13;
-            labelAbilityName.Text = "Ability name";
-            labelAbilityName.TextAlign = ContentAlignment.TopCenter;
-            // 
-            // labelNameAbility
-            // 
-            labelNameAbility.Font = new Font("Segoe UI", 15.75F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            labelNameAbility.Location = new Point(0, 63);
-            labelNameAbility.Name = "labelNameAbility";
-            labelNameAbility.Size = new Size(400, 30);
-            labelNameAbility.TabIndex = 8;
-            labelNameAbility.Text = "name";
-            labelNameAbility.TextAlign = ContentAlignment.TopCenter;
-            // 
-            // labelSeriesAbility
-            // 
-            labelSeriesAbility.Dock = DockStyle.Top;
-            labelSeriesAbility.Location = new Point(0, 0);
-            labelSeriesAbility.Name = "labelSeriesAbility";
-            labelSeriesAbility.Size = new Size(400, 15);
-            labelSeriesAbility.TabIndex = 9;
-            labelSeriesAbility.Text = "series";
-            labelSeriesAbility.TextAlign = ContentAlignment.TopRight;
-            // 
-            // pictureBoxAbility
-            // 
-            pictureBoxAbility.Dock = DockStyle.Left;
-            pictureBoxAbility.Location = new Point(3, 3);
-            pictureBoxAbility.Name = "pictureBoxAbility";
-            pictureBoxAbility.Size = new Size(520, 727);
-            pictureBoxAbility.SizeMode = PictureBoxSizeMode.Zoom;
-            pictureBoxAbility.TabIndex = 7;
-            pictureBoxAbility.TabStop = false;
-            // 
-            // tabLore
-            // 
-            tabLore.Controls.Add(panel1);
-            tabLore.Controls.Add(pictureBoxLore);
-            tabLore.Location = new Point(4, 24);
-            tabLore.Name = "tabLore";
-            tabLore.Padding = new Padding(3);
-            tabLore.Size = new Size(926, 733);
-            tabLore.TabIndex = 2;
-            tabLore.Text = "Lore";
-            tabLore.UseVisualStyleBackColor = true;
-            // 
-            // panel1
-            // 
-            panel1.Controls.Add(panel2);
-            panel1.Controls.Add(buttonExportLore);
-            panel1.Controls.Add(labelLoreAnim);
-            panel1.Controls.Add(buttonDeleteLore);
-            panel1.Controls.Add(labelQuote);
-            panel1.Controls.Add(buttonEditLore);
-            panel1.Controls.Add(pictureBoxRarityLore);
-            panel1.Controls.Add(buttonFavoriteLore);
-            panel1.Controls.Add(labelSeriesLore);
-            panel1.Controls.Add(labelNameLore);
-            panel1.Controls.Add(labelDetail2Name);
-            panel1.Controls.Add(labelDetail2);
-            panel1.Controls.Add(labelDetail1Name);
-            panel1.Controls.Add(labelDetail1);
-            panel1.Dock = DockStyle.Fill;
-            panel1.Location = new Point(523, 3);
-            panel1.Name = "panel1";
-            panel1.Size = new Size(400, 727);
-            panel1.TabIndex = 23;
-            // 
-            // panel2
-            // 
-            panel2.AutoScroll = true;
-            panel2.Controls.Add(panel4);
-            panel2.Controls.Add(panel3);
-            panel2.Location = new Point(0, 152);
-            panel2.Name = "panel2";
-            panel2.Size = new Size(403, 392);
-            panel2.TabIndex = 25;
-            // 
-            // panel4
-            // 
-            panel4.AutoSize = true;
-            panel4.Controls.Add(labelStory2Title);
-            panel4.Controls.Add(labelStory2);
-            panel4.Dock = DockStyle.Top;
-            panel4.Location = new Point(0, 37);
-            panel4.Name = "panel4";
-            panel4.Size = new Size(403, 40);
-            panel4.TabIndex = 22;
-            // 
-            // labelStory2Title
-            // 
-            labelStory2Title.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-            labelStory2Title.Font = new Font("Segoe UI Semibold", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            labelStory2Title.Location = new Point(3, 0);
-            labelStory2Title.Margin = new Padding(3, 11, 3, 0);
-            labelStory2Title.Name = "labelStory2Title";
-            labelStory2Title.Size = new Size(398, 25);
-            labelStory2Title.TabIndex = 17;
-            labelStory2Title.Text = "story 2 title";
-            labelStory2Title.TextAlign = ContentAlignment.TopCenter;
-            labelStory2Title.Click += labelStory2Title_Click;
-            // 
-            // labelStory2
-            // 
-            labelStory2.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-            labelStory2.AutoSize = true;
-            labelStory2.Location = new Point(6, 25);
-            labelStory2.MaximumSize = new Size(380, 0);
-            labelStory2.Name = "labelStory2";
-            labelStory2.Size = new Size(42, 15);
-            labelStory2.TabIndex = 20;
-            labelStory2.Text = "story 2";
-            // 
-            // panel3
-            // 
-            panel3.AutoSize = true;
-            panel3.Controls.Add(labelStory1Title);
-            panel3.Controls.Add(labelStory1);
-            panel3.Dock = DockStyle.Top;
-            panel3.Location = new Point(0, 0);
-            panel3.Name = "panel3";
-            panel3.Size = new Size(403, 37);
-            panel3.TabIndex = 21;
-            // 
-            // labelStory1Title
-            // 
-            labelStory1Title.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-            labelStory1Title.Font = new Font("Segoe UI Semibold", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            labelStory1Title.Location = new Point(3, 0);
-            labelStory1Title.Margin = new Padding(3, 11, 3, 0);
-            labelStory1Title.Name = "labelStory1Title";
-            labelStory1Title.Size = new Size(400, 22);
-            labelStory1Title.TabIndex = 18;
-            labelStory1Title.Text = "story 1 title";
-            labelStory1Title.TextAlign = ContentAlignment.TopCenter;
-            // 
-            // labelStory1
-            // 
-            labelStory1.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-            labelStory1.AutoSize = true;
-            labelStory1.Location = new Point(6, 22);
-            labelStory1.MaximumSize = new Size(380, 0);
-            labelStory1.Name = "labelStory1";
-            labelStory1.Size = new Size(42, 15);
-            labelStory1.TabIndex = 19;
-            labelStory1.Text = "story 1";
-            // 
-            // buttonExportLore
-            // 
-            buttonExportLore.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            buttonExportLore.Location = new Point(207, 666);
-            buttonExportLore.Name = "buttonExportLore";
-            buttonExportLore.Size = new Size(190, 25);
-            buttonExportLore.TabIndex = 24;
-            buttonExportLore.Text = "Export Card";
-            buttonExportLore.UseVisualStyleBackColor = true;
-            buttonExportLore.Click += exportCard_Click;
-            // 
-            // labelLoreAnim
-            // 
-            labelLoreAnim.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
-            labelLoreAnim.AutoSize = true;
-            labelLoreAnim.Location = new Point(6, 648);
-            labelLoreAnim.Name = "labelLoreAnim";
-            labelLoreAnim.Size = new Size(311, 15);
-            labelLoreAnim.TabIndex = 23;
-            labelLoreAnim.Text = "Animated card available! Press space to toggle animation.";
-            // 
-            // buttonDeleteLore
-            // 
-            buttonDeleteLore.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
-            buttonDeleteLore.Location = new Point(207, 697);
-            buttonDeleteLore.Margin = new Padding(3, 3, 6, 3);
-            buttonDeleteLore.Name = "buttonDeleteLore";
-            buttonDeleteLore.Size = new Size(190, 25);
-            buttonDeleteLore.TabIndex = 12;
-            buttonDeleteLore.Text = "Delete Card";
-            buttonDeleteLore.UseVisualStyleBackColor = true;
-            buttonDeleteLore.Click += deleteCard_Click;
+            treeViewCards.KeyPress += KeyPressEvent;
+            // 
+            // pictureBoxCard
+            // 
+            pictureBoxCard.Dock = DockStyle.Fill;
+            pictureBoxCard.Location = new Point(10, 10);
+            pictureBoxCard.Name = "pictureBoxCard";
+            pictureBoxCard.Size = new Size(483, 661);
+            pictureBoxCard.SizeMode = PictureBoxSizeMode.Zoom;
+            pictureBoxCard.TabIndex = 0;
+            pictureBoxCard.TabStop = false;
+            // 
+            // panelCardDetails
+            // 
+            panelCardDetails.Controls.Add(panelCardText);
+            panelCardDetails.Controls.Add(panelCardButtons);
+            panelCardDetails.Controls.Add(pictureBoxRarity);
+            panelCardDetails.Controls.Add(panelName);
+            panelCardDetails.Dock = DockStyle.Right;
+            panelCardDetails.Location = new Point(493, 10);
+            panelCardDetails.Name = "panelCardDetails";
+            panelCardDetails.Size = new Size(441, 661);
+            panelCardDetails.TabIndex = 8;
+            // 
+            // panelCardText
+            // 
+            panelCardText.AutoScroll = true;
+            panelCardText.BackColor = Color.WhiteSmoke;
+            panelCardText.BorderStyle = BorderStyle.Fixed3D;
+            panelCardText.Controls.Add(labelSeries);
+            panelCardText.Controls.Add(labelQuote);
+            panelCardText.Controls.Add(labelBody2);
+            panelCardText.Controls.Add(labelHeader2);
+            panelCardText.Controls.Add(labelBody1);
+            panelCardText.Controls.Add(labelHeader1);
+            panelCardText.Controls.Add(panelLoreDetails);
+            panelCardText.Dock = DockStyle.Fill;
+            panelCardText.Location = new Point(0, 140);
+            panelCardText.Name = "panelCardText";
+            panelCardText.Size = new Size(441, 411);
+            panelCardText.TabIndex = 23;
+            // 
+            // labelSeries
+            // 
+            labelSeries.Dock = DockStyle.Bottom;
+            labelSeries.Location = new Point(0, 352);
+            labelSeries.Name = "labelSeries";
+            labelSeries.Padding = new Padding(20);
+            labelSeries.Size = new Size(437, 55);
+            labelSeries.TabIndex = 2;
+            labelSeries.Text = "series";
+            labelSeries.TextAlign = ContentAlignment.TopRight;
             // 
             // labelQuote
             // 
-            labelQuote.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            labelQuote.AutoSize = true;
+            labelQuote.Dock = DockStyle.Top;
             labelQuote.Font = new Font("Segoe UI", 9F, FontStyle.Italic, GraphicsUnit.Point, 0);
-            labelQuote.Location = new Point(0, 555);
-            labelQuote.Margin = new Padding(3, 11, 3, 0);
+            labelQuote.Location = new Point(0, 172);
+            labelQuote.MaximumSize = new Size(437, 0);
             labelQuote.Name = "labelQuote";
-            labelQuote.Size = new Size(399, 60);
-            labelQuote.TabIndex = 21;
+            labelQuote.Padding = new Padding(20, 20, 20, 0);
+            labelQuote.Size = new Size(77, 35);
+            labelQuote.TabIndex = 12;
             labelQuote.Text = "quote";
-            labelQuote.TextAlign = ContentAlignment.TopCenter;
             // 
-            // buttonEditLore
+            // labelBody2
             // 
-            buttonEditLore.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
-            buttonEditLore.Location = new Point(6, 697);
-            buttonEditLore.Margin = new Padding(6, 3, 3, 3);
-            buttonEditLore.Name = "buttonEditLore";
-            buttonEditLore.Size = new Size(190, 25);
-            buttonEditLore.TabIndex = 11;
-            buttonEditLore.Text = "Edit Card";
-            buttonEditLore.UseVisualStyleBackColor = true;
-            buttonEditLore.Click += editCard_Click;
+            labelBody2.AutoSize = true;
+            labelBody2.Dock = DockStyle.Top;
+            labelBody2.Location = new Point(0, 157);
+            labelBody2.MaximumSize = new Size(437, 0);
+            labelBody2.Name = "labelBody2";
+            labelBody2.Padding = new Padding(20, 0, 20, 0);
+            labelBody2.Size = new Size(83, 15);
+            labelBody2.TabIndex = 11;
+            labelBody2.Text = "body 2";
             // 
-            // pictureBoxRarityLore
+            // labelHeader2
             // 
-            pictureBoxRarityLore.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-            pictureBoxRarityLore.InitialImage = Properties.Resources.rarityStar_Rare;
-            pictureBoxRarityLore.Location = new Point(0, 35);
-            pictureBoxRarityLore.Name = "pictureBoxRarityLore";
-            pictureBoxRarityLore.Size = new Size(400, 25);
-            pictureBoxRarityLore.SizeMode = PictureBoxSizeMode.CenterImage;
-            pictureBoxRarityLore.TabIndex = 22;
-            pictureBoxRarityLore.TabStop = false;
+            labelHeader2.AutoSize = true;
+            labelHeader2.Dock = DockStyle.Top;
+            labelHeader2.Font = new Font("Press Start 2P", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            labelHeader2.Location = new Point(0, 115);
+            labelHeader2.Margin = new Padding(3, 11, 3, 0);
+            labelHeader2.MaximumSize = new Size(437, 100);
+            labelHeader2.MinimumSize = new Size(437, 0);
+            labelHeader2.Name = "labelHeader2";
+            labelHeader2.Padding = new Padding(0, 20, 0, 0);
+            labelHeader2.Size = new Size(437, 42);
+            labelHeader2.TabIndex = 13;
+            labelHeader2.Text = "header 2";
+            labelHeader2.TextAlign = ContentAlignment.TopCenter;
             // 
-            // buttonFavoriteLore
+            // labelBody1
             // 
-            buttonFavoriteLore.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            buttonFavoriteLore.Location = new Point(6, 666);
-            buttonFavoriteLore.Name = "buttonFavoriteLore";
-            buttonFavoriteLore.Size = new Size(190, 25);
-            buttonFavoriteLore.TabIndex = 10;
-            buttonFavoriteLore.Text = "Add to Favorites";
-            buttonFavoriteLore.UseVisualStyleBackColor = true;
-            buttonFavoriteLore.Click += toggleFavorite_Click;
+            labelBody1.AutoSize = true;
+            labelBody1.Dock = DockStyle.Top;
+            labelBody1.Location = new Point(0, 100);
+            labelBody1.MaximumSize = new Size(437, 0);
+            labelBody1.Name = "labelBody1";
+            labelBody1.Padding = new Padding(20, 0, 20, 0);
+            labelBody1.Size = new Size(83, 15);
+            labelBody1.TabIndex = 9;
+            labelBody1.Text = "body 1";
             // 
-            // labelSeriesLore
+            // labelHeader1
             // 
-            labelSeriesLore.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-            labelSeriesLore.Location = new Point(0, 0);
-            labelSeriesLore.Name = "labelSeriesLore";
-            labelSeriesLore.Size = new Size(400, 15);
-            labelSeriesLore.TabIndex = 9;
-            labelSeriesLore.Text = "series";
-            labelSeriesLore.TextAlign = ContentAlignment.TopRight;
+            labelHeader1.AutoSize = true;
+            labelHeader1.Dock = DockStyle.Top;
+            labelHeader1.Font = new Font("Press Start 2P", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            labelHeader1.Location = new Point(0, 58);
+            labelHeader1.Margin = new Padding(3, 11, 3, 0);
+            labelHeader1.MaximumSize = new Size(437, 100);
+            labelHeader1.MinimumSize = new Size(437, 0);
+            labelHeader1.Name = "labelHeader1";
+            labelHeader1.Padding = new Padding(0, 20, 0, 0);
+            labelHeader1.Size = new Size(437, 42);
+            labelHeader1.TabIndex = 7;
+            labelHeader1.Text = "header 1";
+            labelHeader1.TextAlign = ContentAlignment.TopCenter;
             // 
-            // labelNameLore
+            // panelLoreDetails
             // 
-            labelNameLore.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-            labelNameLore.Font = new Font("Segoe UI", 15.75F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            labelNameLore.Location = new Point(0, 63);
-            labelNameLore.Name = "labelNameLore";
-            labelNameLore.Size = new Size(400, 30);
-            labelNameLore.TabIndex = 8;
-            labelNameLore.Text = "name";
-            labelNameLore.TextAlign = ContentAlignment.TopCenter;
-            // 
-            // labelDetail2Name
-            // 
-            labelDetail2Name.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            labelDetail2Name.Font = new Font("Segoe UI Semibold", 12F, FontStyle.Bold);
-            labelDetail2Name.Location = new Point(207, 104);
-            labelDetail2Name.Margin = new Padding(3, 11, 3, 0);
-            labelDetail2Name.Name = "labelDetail2Name";
-            labelDetail2Name.Size = new Size(190, 22);
-            labelDetail2Name.TabIndex = 15;
-            labelDetail2Name.Text = "detail 2 name";
-            labelDetail2Name.TextAlign = ContentAlignment.TopCenter;
+            panelLoreDetails.Controls.Add(labelDetail2);
+            panelLoreDetails.Controls.Add(labelDetail1);
+            panelLoreDetails.Controls.Add(labelDetail2Name);
+            panelLoreDetails.Controls.Add(labelDetail1Name);
+            panelLoreDetails.Dock = DockStyle.Top;
+            panelLoreDetails.Location = new Point(0, 0);
+            panelLoreDetails.Name = "panelLoreDetails";
+            panelLoreDetails.Size = new Size(437, 58);
+            panelLoreDetails.TabIndex = 8;
             // 
             // labelDetail2
             // 
-            labelDetail2.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            labelDetail2.Location = new Point(208, 126);
+            labelDetail2.Location = new Point(222, 41);
             labelDetail2.Name = "labelDetail2";
-            labelDetail2.Size = new Size(191, 15);
-            labelDetail2.TabIndex = 16;
-            labelDetail2.Text = "detail 2";
-            labelDetail2.TextAlign = ContentAlignment.TopCenter;
-            // 
-            // labelDetail1Name
-            // 
-            labelDetail1Name.Font = new Font("Segoe UI Semibold", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            labelDetail1Name.Location = new Point(-2, 104);
-            labelDetail1Name.Margin = new Padding(3, 11, 3, 0);
-            labelDetail1Name.Name = "labelDetail1Name";
-            labelDetail1Name.Size = new Size(198, 22);
-            labelDetail1Name.TabIndex = 13;
-            labelDetail1Name.Text = "detail 1 name";
-            labelDetail1Name.TextAlign = ContentAlignment.TopCenter;
+            labelDetail2.Size = new Size(217, 17);
+            labelDetail2.TabIndex = 3;
+            labelDetail2.Text = "lore 2";
+            labelDetail2.TextAlign = ContentAlignment.MiddleCenter;
             // 
             // labelDetail1
             // 
-            labelDetail1.Location = new Point(-1, 126);
+            labelDetail1.Location = new Point(-1, 41);
             labelDetail1.Name = "labelDetail1";
-            labelDetail1.Size = new Size(198, 15);
-            labelDetail1.TabIndex = 14;
-            labelDetail1.Text = "detail 1\r\n";
-            labelDetail1.TextAlign = ContentAlignment.TopCenter;
+            labelDetail1.Size = new Size(216, 17);
+            labelDetail1.TabIndex = 2;
+            labelDetail1.Text = "lore 1";
+            labelDetail1.TextAlign = ContentAlignment.MiddleCenter;
             // 
-            // pictureBoxLore
+            // labelDetail2Name
             // 
-            pictureBoxLore.Dock = DockStyle.Left;
-            pictureBoxLore.Location = new Point(3, 3);
-            pictureBoxLore.Name = "pictureBoxLore";
-            pictureBoxLore.Size = new Size(520, 727);
-            pictureBoxLore.SizeMode = PictureBoxSizeMode.Zoom;
-            pictureBoxLore.TabIndex = 7;
-            pictureBoxLore.TabStop = false;
+            labelDetail2Name.Font = new Font("Press Start 2P", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            labelDetail2Name.Location = new Point(222, -2);
+            labelDetail2Name.Name = "labelDetail2Name";
+            labelDetail2Name.Padding = new Padding(0, 20, 0, 0);
+            labelDetail2Name.Size = new Size(217, 40);
+            labelDetail2Name.TabIndex = 1;
+            labelDetail2Name.Text = "lore 2";
+            labelDetail2Name.TextAlign = ContentAlignment.MiddleCenter;
+            // 
+            // labelDetail1Name
+            // 
+            labelDetail1Name.Font = new Font("Press Start 2P", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            labelDetail1Name.Location = new Point(-2, -2);
+            labelDetail1Name.Name = "labelDetail1Name";
+            labelDetail1Name.Padding = new Padding(0, 20, 0, 0);
+            labelDetail1Name.Size = new Size(217, 41);
+            labelDetail1Name.TabIndex = 0;
+            labelDetail1Name.Text = "lore 1";
+            labelDetail1Name.TextAlign = ContentAlignment.MiddleCenter;
+            // 
+            // panelCardButtons
+            // 
+            panelCardButtons.Controls.Add(labelAnimAvailable);
+            panelCardButtons.Controls.Add(buttonExport);
+            panelCardButtons.Controls.Add(buttonDelete);
+            panelCardButtons.Controls.Add(buttonEdit);
+            panelCardButtons.Controls.Add(buttonFavorite);
+            panelCardButtons.Dock = DockStyle.Bottom;
+            panelCardButtons.Location = new Point(0, 551);
+            panelCardButtons.Margin = new Padding(3, 20, 3, 3);
+            panelCardButtons.Name = "panelCardButtons";
+            panelCardButtons.Size = new Size(441, 110);
+            panelCardButtons.TabIndex = 25;
+            // 
+            // labelAnimAvailable
+            // 
+            labelAnimAvailable.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            labelAnimAvailable.AutoSize = true;
+            labelAnimAvailable.ForeColor = SystemColors.ControlDark;
+            labelAnimAvailable.Location = new Point(0, 3);
+            labelAnimAvailable.Margin = new Padding(3);
+            labelAnimAvailable.Name = "labelAnimAvailable";
+            labelAnimAvailable.Size = new Size(311, 15);
+            labelAnimAvailable.TabIndex = 21;
+            labelAnimAvailable.Text = "Animated card available! Press space to toggle animation.";
+            // 
+            // buttonExport
+            // 
+            buttonExport.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
+            buttonExport.BackColor = Color.FromArgb(68, 68, 68);
+            buttonExport.FlatAppearance.BorderColor = Color.White;
+            buttonExport.FlatAppearance.BorderSize = 2;
+            buttonExport.FlatAppearance.MouseDownBackColor = Color.FromArgb(255, 42, 109);
+            buttonExport.FlatStyle = FlatStyle.Flat;
+            buttonExport.Font = new Font("Press Start 2P", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            buttonExport.ForeColor = Color.White;
+            buttonExport.Location = new Point(0, 68);
+            buttonExport.Name = "buttonExport";
+            buttonExport.Size = new Size(217, 38);
+            buttonExport.TabIndex = 22;
+            buttonExport.Text = "EXPORT CARD";
+            buttonExport.UseVisualStyleBackColor = false;
+            buttonExport.Click += exportCard_Click;
+            // 
+            // buttonDelete
+            // 
+            buttonDelete.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            buttonDelete.BackColor = Color.FromArgb(68, 68, 68);
+            buttonDelete.FlatAppearance.BorderColor = Color.White;
+            buttonDelete.FlatAppearance.BorderSize = 2;
+            buttonDelete.FlatAppearance.MouseDownBackColor = Color.FromArgb(255, 42, 109);
+            buttonDelete.FlatStyle = FlatStyle.Flat;
+            buttonDelete.Font = new Font("Press Start 2P", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            buttonDelete.ForeColor = Color.White;
+            buttonDelete.Location = new Point(224, 24);
+            buttonDelete.Margin = new Padding(3, 3, 6, 3);
+            buttonDelete.Name = "buttonDelete";
+            buttonDelete.Size = new Size(217, 38);
+            buttonDelete.TabIndex = 6;
+            buttonDelete.Text = "DELETE CARD";
+            buttonDelete.UseVisualStyleBackColor = false;
+            buttonDelete.Click += buttonDelete_Click;
+            // 
+            // buttonEdit
+            // 
+            buttonEdit.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+            buttonEdit.BackColor = Color.FromArgb(68, 68, 68);
+            buttonEdit.FlatAppearance.BorderColor = Color.White;
+            buttonEdit.FlatAppearance.BorderSize = 2;
+            buttonEdit.FlatAppearance.MouseDownBackColor = Color.FromArgb(255, 42, 109);
+            buttonEdit.FlatStyle = FlatStyle.Flat;
+            buttonEdit.Font = new Font("Press Start 2P", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            buttonEdit.ForeColor = Color.White;
+            buttonEdit.Location = new Point(224, 68);
+            buttonEdit.Margin = new Padding(6, 3, 3, 3);
+            buttonEdit.Name = "buttonEdit";
+            buttonEdit.Size = new Size(217, 38);
+            buttonEdit.TabIndex = 5;
+            buttonEdit.Text = "EDIT CARD";
+            buttonEdit.UseVisualStyleBackColor = false;
+            buttonEdit.Click += buttonEdit_Click;
+            // 
+            // buttonFavorite
+            // 
+            buttonFavorite.BackColor = Color.FromArgb(68, 68, 68);
+            buttonFavorite.FlatAppearance.BorderColor = Color.White;
+            buttonFavorite.FlatAppearance.BorderSize = 2;
+            buttonFavorite.FlatAppearance.MouseDownBackColor = Color.FromArgb(255, 42, 109);
+            buttonFavorite.FlatStyle = FlatStyle.Flat;
+            buttonFavorite.Font = new Font("Press Start 2P", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            buttonFavorite.ForeColor = Color.White;
+            buttonFavorite.Location = new Point(0, 24);
+            buttonFavorite.Name = "buttonFavorite";
+            buttonFavorite.Size = new Size(217, 38);
+            buttonFavorite.TabIndex = 4;
+            buttonFavorite.Text = "REMOVE FAVORITE";
+            buttonFavorite.UseVisualStyleBackColor = false;
+            buttonFavorite.Click += buttonFavorite_Click;
+            // 
+            // pictureBoxRarity
+            // 
+            pictureBoxRarity.Dock = DockStyle.Top;
+            pictureBoxRarity.InitialImage = Properties.Resources.rarityStar_Rare;
+            pictureBoxRarity.Location = new Point(0, 100);
+            pictureBoxRarity.Name = "pictureBoxRarity";
+            pictureBoxRarity.Padding = new Padding(0, 0, 0, 20);
+            pictureBoxRarity.Size = new Size(441, 40);
+            pictureBoxRarity.SizeMode = PictureBoxSizeMode.CenterImage;
+            pictureBoxRarity.TabIndex = 20;
+            pictureBoxRarity.TabStop = false;
+            // 
+            // panelName
+            // 
+            panelName.BackgroundImage = Properties.Resources.scroll;
+            panelName.BackgroundImageLayout = ImageLayout.Zoom;
+            panelName.Controls.Add(labelCharName);
+            panelName.Dock = DockStyle.Top;
+            panelName.Location = new Point(0, 0);
+            panelName.Margin = new Padding(3, 3, 3, 20);
+            panelName.Name = "panelName";
+            panelName.Size = new Size(441, 100);
+            panelName.TabIndex = 24;
+            // 
+            // labelCharName
+            // 
+            labelCharName.Dock = DockStyle.Fill;
+            labelCharName.Font = new Font("Press Start 2P", 15.75F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            labelCharName.Location = new Point(0, 0);
+            labelCharName.Name = "labelCharName";
+            labelCharName.Padding = new Padding(0, 15, 0, 0);
+            labelCharName.Size = new Size(441, 100);
+            labelCharName.TabIndex = 1;
+            labelCharName.Text = "name";
+            labelCharName.TextAlign = ContentAlignment.MiddleCenter;
             // 
             // buttonAddCard
             // 
             buttonAddCard.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
-            buttonAddCard.Location = new Point(17, 683);
+            buttonAddCard.BackColor = Color.FromArgb(68, 68, 68);
+            buttonAddCard.FlatAppearance.BorderColor = Color.White;
+            buttonAddCard.FlatAppearance.BorderSize = 2;
+            buttonAddCard.FlatAppearance.MouseDownBackColor = Color.FromArgb(255, 42, 109);
+            buttonAddCard.FlatStyle = FlatStyle.Flat;
+            buttonAddCard.Font = new Font("Press Start 2P", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            buttonAddCard.ForeColor = Color.White;
+            buttonAddCard.Location = new Point(15, 643);
             buttonAddCard.Name = "buttonAddCard";
-            buttonAddCard.Size = new Size(211, 25);
+            buttonAddCard.Padding = new Padding(0, 5, 0, 0);
+            buttonAddCard.Size = new Size(210, 38);
             buttonAddCard.TabIndex = 5;
-            buttonAddCard.Text = "Add Card";
-            buttonAddCard.UseVisualStyleBackColor = true;
+            buttonAddCard.Text = "ADD CARD";
+            buttonAddCard.UseVisualStyleBackColor = false;
             buttonAddCard.Click += buttonAddCard_Click;
             // 
             // backgroundWorkerSaveData
@@ -706,10 +430,15 @@
             // 
             // labelVersion
             // 
+            labelVersion.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
             labelVersion.AutoSize = true;
-            labelVersion.Location = new Point(12, 742);
+            labelVersion.BackColor = Color.Transparent;
+            labelVersion.Font = new Font("Press Start 2P", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            labelVersion.ForeColor = SystemColors.Control;
+            labelVersion.Location = new Point(15, 728);
             labelVersion.Name = "labelVersion";
-            labelVersion.Size = new Size(23, 15);
+            labelVersion.Padding = new Padding(1, 10, 1, 1);
+            labelVersion.Size = new Size(45, 27);
             labelVersion.TabIndex = 6;
             labelVersion.Text = "ver";
             // 
@@ -720,12 +449,20 @@
             // buttonImportCard
             // 
             buttonImportCard.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
-            buttonImportCard.Location = new Point(17, 714);
+            buttonImportCard.BackColor = Color.FromArgb(68, 68, 68);
+            buttonImportCard.FlatAppearance.BorderColor = Color.White;
+            buttonImportCard.FlatAppearance.BorderSize = 2;
+            buttonImportCard.FlatAppearance.MouseDownBackColor = Color.FromArgb(255, 42, 109);
+            buttonImportCard.FlatStyle = FlatStyle.Flat;
+            buttonImportCard.Font = new Font("Press Start 2P", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            buttonImportCard.ForeColor = Color.White;
+            buttonImportCard.Location = new Point(15, 687);
             buttonImportCard.Name = "buttonImportCard";
-            buttonImportCard.Size = new Size(211, 25);
+            buttonImportCard.Padding = new Padding(0, 5, 0, 0);
+            buttonImportCard.Size = new Size(210, 38);
             buttonImportCard.TabIndex = 7;
-            buttonImportCard.Text = "Import Card";
-            buttonImportCard.UseVisualStyleBackColor = true;
+            buttonImportCard.Text = "IMPORT CARD";
+            buttonImportCard.UseVisualStyleBackColor = false;
             buttonImportCard.Click += buttonImportCard_Click;
             // 
             // openFileImportCard
@@ -739,105 +476,168 @@
             saveFileExportCard.InitialDirectory = "%userhome%";
             saveFileExportCard.Title = "Export Card";
             // 
+            // panelSidebar
+            // 
+            panelSidebar.BackColor = Color.Transparent;
+            panelSidebar.Controls.Add(treeViewCards);
+            panelSidebar.Controls.Add(labelVersion);
+            panelSidebar.Controls.Add(buttonImportCard);
+            panelSidebar.Controls.Add(buttonAddCard);
+            panelSidebar.Dock = DockStyle.Left;
+            panelSidebar.Location = new Point(0, 0);
+            panelSidebar.Name = "panelSidebar";
+            panelSidebar.Size = new Size(240, 761);
+            panelSidebar.TabIndex = 8;
+            // 
+            // panelCardDisplay
+            // 
+            panelCardDisplay.BackColor = Color.Transparent;
+            panelCardDisplay.Controls.Add(pictureBoxCard);
+            panelCardDisplay.Controls.Add(panelCardDetails);
+            panelCardDisplay.Dock = DockStyle.Fill;
+            panelCardDisplay.Location = new Point(240, 80);
+            panelCardDisplay.Name = "panelCardDisplay";
+            panelCardDisplay.Padding = new Padding(10);
+            panelCardDisplay.Size = new Size(944, 681);
+            panelCardDisplay.TabIndex = 8;
+            panelCardDisplay.Visible = false;
+            // 
+            // panelButtons
+            // 
+            panelButtons.BackColor = Color.Transparent;
+            panelButtons.Controls.Add(buttonLore);
+            panelButtons.Controls.Add(buttonAbility);
+            panelButtons.Controls.Add(buttonPortrait);
+            panelButtons.Dock = DockStyle.Top;
+            panelButtons.Location = new Point(240, 0);
+            panelButtons.Name = "panelButtons";
+            panelButtons.Size = new Size(944, 80);
+            panelButtons.TabIndex = 9;
+            // 
+            // buttonLore
+            // 
+            buttonLore.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            buttonLore.BackColor = Color.FromArgb(68, 68, 68);
+            buttonLore.FlatAppearance.BorderColor = Color.White;
+            buttonLore.FlatAppearance.BorderSize = 3;
+            buttonLore.FlatStyle = FlatStyle.Flat;
+            buttonLore.Font = new Font("Press Start 2P", 11.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            buttonLore.ForeColor = Color.White;
+            buttonLore.Location = new Point(640, 12);
+            buttonLore.Margin = new Padding(10, 3, 10, 3);
+            buttonLore.Name = "buttonLore";
+            buttonLore.Padding = new Padding(0, 5, 0, 0);
+            buttonLore.Size = new Size(294, 51);
+            buttonLore.TabIndex = 2;
+            buttonLore.Text = "LORE CARD";
+            buttonLore.UseVisualStyleBackColor = false;
+            buttonLore.Click += buttonLore_Click;
+            // 
+            // buttonAbility
+            // 
+            buttonAbility.Anchor = AnchorStyles.Top;
+            buttonAbility.BackColor = Color.FromArgb(68, 68, 68);
+            buttonAbility.FlatAppearance.BorderColor = Color.White;
+            buttonAbility.FlatAppearance.BorderSize = 3;
+            buttonAbility.FlatStyle = FlatStyle.Flat;
+            buttonAbility.Font = new Font("Press Start 2P", 11.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            buttonAbility.ForeColor = Color.White;
+            buttonAbility.Location = new Point(327, 12);
+            buttonAbility.Margin = new Padding(10, 3, 10, 3);
+            buttonAbility.Name = "buttonAbility";
+            buttonAbility.Padding = new Padding(0, 5, 0, 0);
+            buttonAbility.Size = new Size(294, 51);
+            buttonAbility.TabIndex = 1;
+            buttonAbility.Text = "ABILITY CARD";
+            buttonAbility.UseVisualStyleBackColor = false;
+            buttonAbility.Click += buttonAbility_Click;
+            // 
+            // buttonPortrait
+            // 
+            buttonPortrait.BackColor = Color.FromArgb(68, 68, 68);
+            buttonPortrait.FlatAppearance.BorderColor = Color.White;
+            buttonPortrait.FlatAppearance.BorderSize = 3;
+            buttonPortrait.FlatStyle = FlatStyle.Flat;
+            buttonPortrait.Font = new Font("Press Start 2P", 11.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            buttonPortrait.ForeColor = Color.White;
+            buttonPortrait.Location = new Point(13, 12);
+            buttonPortrait.Margin = new Padding(10, 3, 10, 3);
+            buttonPortrait.Name = "buttonPortrait";
+            buttonPortrait.Padding = new Padding(0, 5, 0, 0);
+            buttonPortrait.Size = new Size(294, 51);
+            buttonPortrait.TabIndex = 0;
+            buttonPortrait.Text = "PORTRAIT CARD";
+            buttonPortrait.UseVisualStyleBackColor = false;
+            buttonPortrait.Click += buttonPortrait_Click;
+            // 
             // Home
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = SystemColors.Control;
+            BackgroundImage = Properties.Resources.stoneDungeon;
             ClientSize = new Size(1184, 761);
-            Controls.Add(buttonImportCard);
-            Controls.Add(labelVersion);
-            Controls.Add(buttonAddCard);
-            Controls.Add(treeViewCards);
-            Controls.Add(cardDisplay);
-            FormBorderStyle = FormBorderStyle.FixedSingle;
+            Controls.Add(panelCardDisplay);
+            Controls.Add(panelButtons);
+            Controls.Add(panelSidebar);
             Icon = (Icon)resources.GetObject("$this.Icon");
-            MaximizeBox = false;
+            KeyPreview = true;
             Name = "Home";
             Text = "ExLa Card Viewer";
-            cardDisplay.ResumeLayout(false);
-            tabPortrait.ResumeLayout(false);
-            panelPortrait.ResumeLayout(false);
-            panelPortrait.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)pictureBoxRarityPortrait).EndInit();
-            ((System.ComponentModel.ISupportInitialize)pictureBoxPortrait).EndInit();
-            tabAbility.ResumeLayout(false);
-            panelAbility.ResumeLayout(false);
-            panelAbility.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)pictureBoxRarityAbility).EndInit();
-            ((System.ComponentModel.ISupportInitialize)pictureBoxAbility).EndInit();
-            tabLore.ResumeLayout(false);
-            panel1.ResumeLayout(false);
-            panel1.PerformLayout();
-            panel2.ResumeLayout(false);
-            panel2.PerformLayout();
-            panel4.ResumeLayout(false);
-            panel4.PerformLayout();
-            panel3.ResumeLayout(false);
-            panel3.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)pictureBoxRarityLore).EndInit();
-            ((System.ComponentModel.ISupportInitialize)pictureBoxLore).EndInit();
+            KeyPress += KeyPressEvent;
+            ((System.ComponentModel.ISupportInitialize)pictureBoxCard).EndInit();
+            panelCardDetails.ResumeLayout(false);
+            panelCardText.ResumeLayout(false);
+            panelCardText.PerformLayout();
+            panelLoreDetails.ResumeLayout(false);
+            panelCardButtons.ResumeLayout(false);
+            panelCardButtons.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)pictureBoxRarity).EndInit();
+            panelName.ResumeLayout(false);
+            panelSidebar.ResumeLayout(false);
+            panelSidebar.PerformLayout();
+            panelCardDisplay.ResumeLayout(false);
+            panelButtons.ResumeLayout(false);
             ResumeLayout(false);
-            PerformLayout();
         }
 
         #endregion
         private TreeView treeViewCards;
-        private TabControl cardDisplay;
-        private TabPage tabAbility;
-        private TabPage tabPortrait;
-        private TabPage tabLore;
         private Button buttonAddCard;
         private System.ComponentModel.BackgroundWorker backgroundWorkerSaveData;
-        private PictureBox pictureBoxPortrait;
-        private Label labelSeriesPortrait;
-        private Label labelNamePortrait;
-        private Button buttonDeletePortrait;
-        private Button buttonEditPortrait;
-        private Button buttonFavoritePortrait;
-        private Button buttonDeleteAbility;
-        private Button buttonEditAbility;
-        private Button buttonFavoriteAbility;
-        private Label labelSeriesAbility;
-        private Label labelNameAbility;
-        private PictureBox pictureBoxAbility;
-        private Button buttonDeleteLore;
-        private Button buttonEditLore;
-        private Button buttonFavoriteLore;
-        private Label labelSeriesLore;
-        private Label labelNameLore;
-        private PictureBox pictureBoxLore;
-        private Label labelDetail2;
-        private Label labelDetail2Name;
+        private PictureBox pictureBoxCard;
+        private Label labelSeries;
+        private Label labelCharName;
+        private Button buttonDelete;
+        private Button buttonEdit;
+        private Button buttonFavorite;
         private Label labelDetail1;
-        private Label labelDetail1Name;
-        private Label labelPortraitTitle;
-        private Label labelAbility;
-        private Label labelAbilityName;
-        private Label labelStory2;
-        private Label labelStory1;
-        private Label labelStory1Title;
-        private Label labelStory2Title;
-        private Label labelQuote;
-        private Panel panelAbility;
-        private Panel panelPortrait;
-        private PictureBox pictureBoxRarityPortrait;
-        private PictureBox pictureBoxRarityAbility;
-        private PictureBox pictureBoxRarityLore;
-        private Panel panel1;
-        private Label labelPortraitAnim;
-        private Label labelAbilityAnim;
-        private Label labelLoreAnim;
+        private Label labelDetail2Name;
+        private Label labelHeader1;
+        private PictureBox pictureBoxRarity;
+        private Label labelAnimAvailable;
         private Label labelVersion;
         private System.ComponentModel.BackgroundWorker backgroundWorkerLoadImage;
         private Button buttonImportCard;
-        private Button buttonExportPortrait;
+        private Button buttonExport;
         private OpenFileDialog openFileImportCard;
         private SaveFileDialog saveFileExportCard;
-        private Button buttonExportAbility;
-        private Button buttonExportLore;
-        private Panel panel2;
-        private Panel panel4;
-        private Panel panel3;
+        private Panel panelSidebar;
+        private Panel panelCardDisplay;
+        private Panel panelCardDetails;
+        private Panel panelButtons;
+        private Button buttonLore;
+        private Button buttonAbility;
+        private Button buttonPortrait;
+        private Panel panelCardText;
+        private Panel panelLoreDetails;
+        private Label labelDetail2;
+        private Label labelDetail1Name;
+        private Label labelQuote;
+        private Label labelBody2;
+        private Label labelHeader2;
+        private Label labelBody1;
+        private Panel panelName;
+        private Panel panelCardButtons;
     }
 }

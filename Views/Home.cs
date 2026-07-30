@@ -36,15 +36,25 @@ namespace CardViewer.Views
             {"Mythic", CardSet.RarityTier.Mythic}
         };
 
+        private static readonly Color unselectedColor = Color.FromArgb(0x44, 0x44, 0x44);
+        private static readonly Color selectedColor = Color.FromArgb(0xFF, 0x2A, 0x6D);
+
         private CardSet? selectedCard = null;
         private bool cardAnimated = false;
+        private int currentPage = 0;
 
         private MemoryStream? portraitImageStream;
+        private Image? portraitImage;
         private MemoryStream? portraitAnimStream;
+        private Image? portraitAnim;
         private MemoryStream? abilityImageStream;
+        private Image? abilityImage;
         private MemoryStream? abilityAnimStream;
+        private Image? abilityAnim;
         private MemoryStream? loreImageStream;
+        private Image? loreImage;
         private MemoryStream? loreAnimStream;
+        private Image? loreAnim;
 
         public Home()
         {
@@ -102,9 +112,19 @@ namespace CardViewer.Views
 
             LinkedList<Tuple<string, CardSet.RarityTier>> corruptCards = new();
 
+            TreeNode? seriesNode = null;
+
             foreach (string cardName in normalCards.Keys.OrderBy(SortCards))
             {
-                int nodeIndex = treeViewCards.Nodes[0].Nodes.Add(new TreeNode(cardName));
+                TreeNode charNode = new TreeNode(cardName);
+
+                string series = normalCards[cardName][normalCards[cardName].Keys.First()].Series;
+                if (seriesNode == null || seriesNode.Text != series)
+                {
+                    seriesNode = new TreeNode(series);
+                    treeViewCards.Nodes[0].Nodes.Add(seriesNode);
+                }
+                seriesNode.Nodes.Add(charNode);
                 foreach (CardSet.RarityTier rarity in normalCards[cardName].Keys.Order())
                 {
                     if (!CheckValidPaths(normalCards[cardName][rarity]))
@@ -113,12 +133,12 @@ namespace CardViewer.Views
                         continue;
                     }
 
-                    treeViewCards.Nodes[0].Nodes[nodeIndex].Nodes.Add(new TreeNode(RarityNames[rarity]));
+                    charNode.Nodes.Add(new TreeNode(RarityNames[rarity]));
                 }
 
-                if (treeViewCards.Nodes[0].Nodes[nodeIndex].Nodes.Count == 0)
+                if (charNode.Nodes.Count == 0)
                 {
-                    treeViewCards.Nodes[0].Nodes[nodeIndex].Remove();
+                    charNode.Remove();
                 }
             }
 
@@ -217,8 +237,32 @@ namespace CardViewer.Views
         private string SortCards(string name)
         {
             var subDict = normalCards[name];
-            var card = subDict[subDict.Keys.ElementAt(0)];
+            var card = subDict[subDict.Keys.First()];
             return $"{card.Series}|{card.Number}";
+        }
+
+        private void buttonPortrait_Click(object sender, EventArgs e)
+        {
+            if (selectedCard != null && currentPage != 0)
+            {
+                ShowPage(0);
+            }
+        }
+
+        private void buttonAbility_Click(object sender, EventArgs e)
+        {
+            if (selectedCard != null && currentPage != 1)
+            {
+                ShowPage(1);
+            }
+        }
+
+        private void buttonLore_Click(object sender, EventArgs e)
+        {
+            if (selectedCard != null && currentPage != 2)
+            {
+                ShowPage(2);
+            }
         }
 
         /// <summary>
@@ -296,15 +340,31 @@ namespace CardViewer.Views
             }
             else
             {
-                int nodeIndex = -1;
+                TreeNode? charNode = null;
+                TreeNode? seriesNode = null;
+
+                foreach (TreeNode node in treeViewCards.Nodes[0].Nodes)
+                {
+                    if (node.Text == set.Series)
+                    {
+                        seriesNode = node;
+                        break;
+                    }
+                }
+                if (seriesNode == null)
+                {
+                    seriesNode = new TreeNode(set.Series);
+                    treeViewCards.Nodes[0].Nodes.Add(seriesNode);
+                }
+
                 if (normalCards.TryGetValue(set.Name, out var innerDict))
                 {
                     innerDict.Add(set.Rarity, set);
-                    foreach (TreeNode node in treeViewCards.Nodes[0].Nodes)
+                    foreach (TreeNode node in seriesNode.Nodes)
                     {
                         if (node.Text == set.Name)
                         {
-                            nodeIndex = treeViewCards.Nodes[0].Nodes.IndexOf(node);
+                            charNode = node;
                             break;
                         }
                     }
@@ -313,10 +373,11 @@ namespace CardViewer.Views
                 {
                     normalCards.Add(set.Name, new Dictionary<CardSet.RarityTier, CardSet>());
                     normalCards[set.Name].Add(set.Rarity, set);
-                    nodeIndex = treeViewCards.Nodes[0].Nodes.Add(new TreeNode(set.Name));
+                    charNode = new TreeNode(set.Name);
+                    seriesNode.Nodes.Add(charNode);
                 }
                 TreeNode newNode = new TreeNode(RarityNames[set.Rarity]);
-                treeViewCards.Nodes[0].Nodes[nodeIndex].Nodes.Add(newNode);
+                charNode.Nodes.Add(newNode);
 
                 treeViewCards.SelectedNode = newNode;
 
@@ -420,59 +481,72 @@ namespace CardViewer.Views
 
             CardSet set = (CardSet)e.Argument;
 
+            portraitImage?.Dispose();
             portraitImageStream?.Dispose();
             portraitImageStream = new MemoryStream();
             using (FileStream fs = File.OpenRead(set.Portrait.ImageFile))
             {
                 fs.CopyTo(portraitImageStream);
             }
-            pictureBoxPortrait.Image = Image.FromStream(portraitImageStream);
+            portraitImage = Image.FromStream(portraitImageStream);
 
+
+            portraitAnim?.Dispose();
+            portraitAnimStream?.Dispose();
             if (set.Portrait.AnimFile != null)
             {
-                portraitAnimStream?.Dispose();
                 portraitAnimStream = new MemoryStream();
                 using (FileStream fs = File.OpenRead(set.Portrait.AnimFile))
                 {
                     fs.CopyTo(portraitAnimStream);
                 }
+                portraitAnim = Image.FromStream(portraitAnimStream);
             }
 
+            abilityImage?.Dispose();
             abilityImageStream?.Dispose();
             abilityImageStream = new MemoryStream();
             using (FileStream fs = File.OpenRead(set.Ability.ImageFile))
             {
                 fs.CopyTo(abilityImageStream);
             }
-            pictureBoxAbility.Image = Image.FromStream(abilityImageStream);
+            abilityImage = Image.FromStream(abilityImageStream);
 
+            abilityAnim?.Dispose();
+            abilityAnimStream?.Dispose();
             if (set.Ability.AnimFile != null)
             {
-                abilityAnimStream?.Dispose();
                 abilityAnimStream = new MemoryStream();
                 using (FileStream fs = File.OpenRead(set.Ability.AnimFile))
                 {
                     fs.CopyTo(abilityAnimStream);
                 }
+                abilityAnim = Image.FromStream(abilityAnimStream);
             }
 
+            loreImage?.Dispose();
             loreImageStream?.Dispose();
             loreImageStream = new MemoryStream();
             using (FileStream fs = File.OpenRead(set.Lore.ImageFile))
             {
                 fs.CopyTo(loreImageStream);
             }
-            pictureBoxLore.Image = Image.FromStream(loreImageStream);
+            loreImage = Image.FromStream(loreImageStream);
 
+            loreAnim?.Dispose();
+            loreAnimStream?.Dispose();
             if (set.Lore.AnimFile != null)
             {
-                loreAnimStream?.Dispose();
                 loreAnimStream = new MemoryStream();
                 using (FileStream fs = File.OpenRead(set.Lore.AnimFile))
                 {
                     fs.CopyTo(loreAnimStream);
                 }
+                loreAnim = Image.FromStream(loreAnimStream);
             }
+
+            // invoke garbage collect to clean up old images and prevent using a lot of memory
+            GC.Collect();
         }
 
         /// <summary>
@@ -485,7 +559,7 @@ namespace CardViewer.Views
         private void treeViewCards_AfterSelect(object sender, TreeViewEventArgs e)
         {
             TreeNode node = treeViewCards.SelectedNode;
-            if (node.Level == 0 || (node.Level == 1 && node.Parent.Name == "nodeStandardCards"))
+            if (node.Level == 0 || (node.Level == 1 && node.Parent.Name == "nodeStandardCards") || (node.Level == 2 && node.Parent.Parent.Name == "nodeStandardCards"))
             {
                 return;
             }
@@ -512,28 +586,19 @@ namespace CardViewer.Views
                 selectedCard = normalCards[node.Parent.Text][RarityValues[node.Text]];
             }
 
-            cardDisplay.Visible = true;
-
-            labelNamePortrait.Text = selectedCard.Name;
-            labelNameAbility.Text = selectedCard.Name;
-            labelNameLore.Text = selectedCard.Name;
+            labelCharName.Text = selectedCard.Name.ToUpper();
 
             if (favoriteCards.Contains(new Tuple<string, CardSet.RarityTier>(selectedCard.Name, selectedCard.Rarity)))
             {
-                buttonFavoritePortrait.Text = "Remove from Favorites";
-                buttonFavoriteAbility.Text = "Remove from Favorites";
-                buttonFavoriteLore.Text = "Remove from Favorites";
+                buttonFavorite.Text = "REMOVE FAVORITE";
             }
             else
             {
-                buttonFavoritePortrait.Text = "Add to Favorites";
-                buttonFavoriteAbility.Text = "Add to Favorites";
-                buttonFavoriteLore.Text = "Add to Favorites";
+                buttonFavorite.Text = "ADD FAVORITE";
             }
 
-            cardDisplay.SelectedIndex = 0;
-
             UpdateDisplay();
+            panelCardDisplay.Visible = true;
         }
 #pragma warning restore CS8600, CS8602
 
@@ -542,7 +607,7 @@ namespace CardViewer.Views
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void editCard_Click(object sender, EventArgs e)
+        private void buttonEdit_Click(object sender, EventArgs e)
         {
             if (selectedCard == null)
             {
@@ -577,7 +642,7 @@ namespace CardViewer.Views
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void deleteCard_Click(object sender, EventArgs e)
+        private void buttonDelete_Click(object sender, EventArgs e)
         {
             if (selectedCard == null)
             {
@@ -592,7 +657,7 @@ namespace CardViewer.Views
 
             CardSet set = selectedCard;
             selectedCard = null;
-            cardDisplay.Visible = false;
+            panelCardDisplay.Visible = false;
 
             File.Delete(set.Portrait.ImageFile);
             if (set.Portrait.AnimFile != null)
@@ -641,21 +706,32 @@ namespace CardViewer.Views
                 {
                     normalCards.Remove(set.Name);
                 }
-                foreach (TreeNode node in treeViewCards.Nodes[0].Nodes)
+                foreach (TreeNode seriesNode in treeViewCards.Nodes[0].Nodes)
                 {
-                    if (node.Text == set.Name)
+                    if (seriesNode.Text == set.Series)
                     {
-                        foreach (TreeNode subNode in node.Nodes)
+                        foreach (TreeNode charNode in seriesNode.Nodes)
                         {
-                            if (subNode.Text == RarityNames[set.Rarity])
+                            if (charNode.Text == set.Name)
                             {
-                                subNode.Remove();
+                                foreach (TreeNode rarityNode in charNode.Nodes)
+                                {
+                                    if (rarityNode.Text == RarityNames[set.Rarity])
+                                    {
+                                        rarityNode.Remove();
+                                        break;
+                                    }
+                                }
+                                if (charNode.Nodes.Count == 0)
+                                {
+                                    charNode.Remove();
+                                }
                                 break;
                             }
                         }
-                        if (node.Nodes.Count == 0)
+                        if (seriesNode.Nodes.Count == 0)
                         {
-                            node.Remove();
+                            seriesNode.Remove();
                         }
                         break;
                     }
@@ -669,7 +745,7 @@ namespace CardViewer.Views
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void toggleFavorite_Click(object sender, EventArgs e)
+        private void buttonFavorite_Click(object sender, EventArgs e)
         {
             if (selectedCard == null)
             {
@@ -689,18 +765,14 @@ namespace CardViewer.Views
                     }
                 }
 
-                buttonFavoritePortrait.Text = "Add to Favorites";
-                buttonFavoriteAbility.Text = "Add to Favorites";
-                buttonFavoriteLore.Text = "Add to Favorites";
+                buttonFavorite.Text = "ADD FAVORITE";
             }
             else
             {
                 favoriteCards.Add(cardTuple);
                 treeViewCards.Nodes[2].Nodes.Add(new TreeNode(nodeName));
 
-                buttonFavoritePortrait.Text = "Remove from Favorites";
-                buttonFavoriteAbility.Text = "Remove from Favorites";
-                buttonFavoriteLore.Text = "Remove from Favorites";
+                buttonFavorite.Text = "REMOVE FAVORITE";
             }
 
             backgroundWorkerSaveData.RunWorkerAsync("f");
@@ -717,72 +789,128 @@ namespace CardViewer.Views
                 throw new InvalidOperationException();
             }
 
+            currentPage = 0;
             backgroundWorkerLoadImage.RunWorkerAsync(selectedCard);
 
-            string series = selectedCard.Rarity == CardSet.RarityTier.Mythic ? $"Mythic - {selectedCard.Series}" : $"{selectedCard.Series} Series #{selectedCard.Number}";
-            labelSeriesPortrait.Text = series;
-            labelSeriesAbility.Text = series;
-            labelSeriesLore.Text = series;
-
-            labelPortraitAnim.Visible = selectedCard.Portrait.AnimFile != null;
-
-            labelPortraitTitle.Text = selectedCard.Portrait.Title;
-
-            labelAbilityAnim.Visible = selectedCard.Ability.AnimFile != null;
-
-            labelAbilityName.Text = "Ability: " + selectedCard.Ability.AbilityName;
-            labelAbility.Text = selectedCard.Ability.AbilityDesc;
-
-            labelLoreAnim.Visible = selectedCard.Lore.AnimFile != null;
-
-            labelDetail1Name.Text = selectedCard.Lore.Detail1Name;
-            labelDetail1.Text = selectedCard.Lore.Detail1;
-            labelDetail2Name.Text = selectedCard.Lore.Detail2Name;
-            labelDetail2.Text = selectedCard.Lore.Detail2;
-            labelStory1Title.Text = selectedCard.Lore.Story1Title;
-            labelStory1.Text = selectedCard.Lore.Story1;
-            labelStory2Title.Text = selectedCard.Lore.Story2Title;
-            labelStory2.Text = selectedCard.Lore.Story2;
-            labelQuote.Text = $"\"{selectedCard.Lore.Quote}\"";
+            labelSeries.Text = selectedCard.Rarity == CardSet.RarityTier.Mythic ? $"Mythic - {selectedCard.Series}" : $"{selectedCard.Series} Series #{selectedCard.Number}";
 
             switch (selectedCard.Rarity)
             {
                 case (CardSet.RarityTier.Rare):
-                    pictureBoxRarityPortrait.Image = Properties.Resources.rarityStar_Rare;
-                    pictureBoxRarityAbility.Image = Properties.Resources.rarityStar_Rare;
-                    pictureBoxRarityLore.Image = Properties.Resources.rarityStar_Rare;
+                    pictureBoxRarity.Image = Properties.Resources.rarityStar_Rare;
                     break;
                 case (CardSet.RarityTier.SuperRare):
-                    pictureBoxRarityPortrait.Image = Properties.Resources.rarityStar_SR;
-                    pictureBoxRarityAbility.Image = Properties.Resources.rarityStar_SR;
-                    pictureBoxRarityLore.Image = Properties.Resources.rarityStar_SR;
+                    pictureBoxRarity.Image = Properties.Resources.rarityStar_SR;
                     break;
                 case (CardSet.RarityTier.SuperSuperRare):
-                    pictureBoxRarityPortrait.Image = Properties.Resources.rarityStar_SSR;
-                    pictureBoxRarityAbility.Image = Properties.Resources.rarityStar_SSR;
-                    pictureBoxRarityLore.Image = Properties.Resources.rarityStar_SSR;
+                    pictureBoxRarity.Image = Properties.Resources.rarityStar_SSR;
                     break;
                 case (CardSet.RarityTier.Mythic):
-                    pictureBoxRarityPortrait.Image = Properties.Resources.rarityStar_Mythic;
-                    pictureBoxRarityAbility.Image = Properties.Resources.rarityStar_Mythic;
-                    pictureBoxRarityLore.Image = Properties.Resources.rarityStar_Mythic;
+                    pictureBoxRarity.Image = Properties.Resources.rarityStar_Mythic;
+                    break;
+            }
+            ShowPage(0);
+        }
+
+        private void ShowPage(int pageNum)
+        {
+            if (selectedCard == null)
+            {
+                throw new InvalidOperationException();
+            }
+            currentPage = pageNum;
+
+            switch (pageNum)
+            {
+                case 0:
+                    buttonPortrait.BackColor = selectedColor;
+                    buttonAbility.BackColor = unselectedColor;
+                    buttonLore.BackColor = unselectedColor;
+
+                    panelLoreDetails.Visible = false;
+
+                    labelHeader1.Text = selectedCard.Portrait.Title;
+                    labelBody1.Visible = false;
+                    labelHeader2.Visible = false;
+                    labelBody2.Visible = false;
+                    labelQuote.Visible = false;
+
+                    labelAnimAvailable.Visible = selectedCard.Portrait.AnimFile != null;
+
+                    while (backgroundWorkerLoadImage.IsBusy)
+                    {
+                        Application.DoEvents();
+                    }
+                    if (portraitImageStream != null)
+                    {
+                        pictureBoxCard.Image = portraitImage;
+                    }
+                    break;
+                case 1:
+                    buttonAbility.BackColor = selectedColor;
+                    buttonPortrait.BackColor = unselectedColor;
+                    buttonLore.BackColor = unselectedColor;
+
+                    panelLoreDetails.Visible = false;
+
+                    labelHeader1.Text = "Ability: " + selectedCard.Ability.AbilityName;
+                    labelBody1.Visible = true;
+                    labelBody1.Text = selectedCard.Ability.AbilityDesc;
+                    labelHeader2.Visible = false;
+                    labelBody2.Visible = false;
+                    labelQuote.Visible = false;
+
+                    labelAnimAvailable.Visible = selectedCard.Ability.AnimFile != null;
+
+                    while (backgroundWorkerLoadImage.IsBusy)
+                    {
+                        Application.DoEvents();
+                    }
+                    if (abilityImageStream != null)
+                    {
+                        pictureBoxCard.Image = abilityImage;
+                    }
+                    break;
+                case 2:
+                    buttonLore.BackColor = selectedColor;
+                    buttonPortrait.BackColor = unselectedColor;
+                    buttonAbility.BackColor = unselectedColor;
+
+                    panelLoreDetails.Visible = true;
+
+                    labelDetail1Name.Text = selectedCard.Lore.Detail1Name;
+                    labelDetail1.Text = selectedCard.Lore.Detail1;
+                    labelDetail2Name.Text = selectedCard.Lore.Detail2Name;
+                    labelDetail2.Text = selectedCard.Lore.Detail2;
+
+                    labelBody1.Visible = false; // need to make the controls visible in a specific order to make sure they display correctly
+                    labelQuote.Visible = true;
+                    labelBody2.Visible = true;
+                    labelHeader2.Visible = true;
+                    labelBody1.Visible = true;
+
+                    labelHeader1.Text = selectedCard.Lore.Story1Title;
+                    labelBody1.Text = selectedCard.Lore.Story1;
+                    labelHeader2.Text = selectedCard.Lore.Story2Title;
+                    labelBody2.Text = selectedCard.Lore.Story2;
+                    labelQuote.Text = $"\"{selectedCard.Lore.Quote}\"";
+
+                    labelAnimAvailable.Visible = selectedCard.Lore.AnimFile != null;
+
+                    while (backgroundWorkerLoadImage.IsBusy)
+                    {
+                        Application.DoEvents();
+                    }
+                    if (loreImageStream != null)
+                    {
+                        pictureBoxCard.Image = loreImage;
+                    }
                     break;
             }
 
-            cardDisplay.Refresh();
-        }
-
-        /// <summary>
-        /// Event handler for switching tabs on the tab display
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void cardDisplay_Selecting(object sender, EventArgs e)
-        {
-            if (cardAnimated)
-            {
-                StopAnimation();
-            }
+            this.Focus();
+            panelButtons.Refresh();
+            panelCardDisplay.Refresh();
         }
 
         /// <summary>
@@ -790,76 +918,69 @@ namespace CardViewer.Views
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void cardDisplay_KeyPress(object sender, KeyPressEventArgs e)
+        private void KeyPressEvent(object sender, KeyPressEventArgs e)
         {
             if (e.KeyChar == ' ')
             {
-                if (!cardAnimated)
+                if (selectedCard == null)
                 {
-                    StartAnimation();
+                    return;
+                }
+                else if (!cardAnimated)
+                {
+                    switch (currentPage)
+                    {
+                        case 0:
+                            if (portraitAnim != null)
+                            {
+                                pictureBoxCard.Image = portraitAnim;
+                            }
+                            break;
+                        case 1:
+                            if (abilityAnim != null)
+                            {
+                                pictureBoxCard.Image = abilityAnim;
+                            }
+                            break;
+                        case 2:
+                            if (loreAnim != null)
+                            {
+                                pictureBoxCard.Image = loreAnim;
+                            }
+                            break;
+                    }
+
+                    cardAnimated = true;
                 }
                 else
                 {
-                    StopAnimation();
+                    switch (currentPage)
+                    {
+                        case 0:
+                            if (portraitImage != null)
+                            {
+                                pictureBoxCard.Image = portraitImage;
+                            }
+                            break;
+                        case 1:
+                            if (abilityImage != null)
+                            {
+                                pictureBoxCard.Image = abilityImage;
+                            }
+                            break;
+                        case 2:
+                            if (loreImage != null)
+                            {
+                                pictureBoxCard.Image = loreImage;
+                            }
+                            break;
+                    }
+
+                    cardAnimated = false;
                 }
+
+                e.Handled = true;
             }
-        }
-
-        /// <summary>
-        /// Helper method that changes the display to show a card animation, if available
-        /// </summary>
-        private void StartAnimation()
-        {
-            if (selectedCard == null || cardAnimated)
-            {
-                return;
-            }
-
-            switch (cardDisplay.SelectedIndex)
-            {
-                case 0:
-                    if (portraitAnimStream != null)
-                    {
-                        pictureBoxPortrait.Image = Image.FromStream(portraitAnimStream);
-                    }
-                    break;
-                case 1:
-                    if (abilityAnimStream != null)
-                    {
-                        pictureBoxAbility.Image = Image.FromStream(abilityAnimStream);
-                    }
-                    break;
-                case 2:
-                    if (loreAnimStream != null)
-                    {
-                        pictureBoxLore.Image = Image.FromStream(loreAnimStream);
-                    }
-                    break;
-            }
-
-            cardAnimated = true;
-        }
-
-        /// <summary>
-        /// Helper method to reset all card animations.
-        /// </summary>
-        private void StopAnimation()
-        {
-            if (selectedCard == null || !cardAnimated)
-            {
-                return;
-            }
-
-            pictureBoxPortrait.Image = Image.FromStream(portraitImageStream);
-            pictureBoxAbility.Image = Image.FromStream(abilityImageStream);
-            pictureBoxLore.Image = Image.FromStream(loreImageStream);
-
-            cardAnimated = false;
-        }
-
-        private void labelStory2Title_Click(object sender, EventArgs e)
-        {
-
         }
     }
 }

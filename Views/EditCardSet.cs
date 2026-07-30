@@ -58,9 +58,9 @@ namespace CardViewer.Views
             }
             UpdateRarity();
 
-            inputCharName.Text = set.Name;
             inputCharSeries.Text = set.Series;
             inputCharNum.Value = set.Number;
+            inputCharName.Text = set.Name;
 
             inputPortraitTitle.Text = set.Portrait.Title;
             portraitImagePath = set.Portrait.ImageFile;
@@ -157,10 +157,28 @@ namespace CardViewer.Views
             }
             else
             {
-                inputCharNum.Value = 0;
                 inputCharNum.Visible = true;
                 labelNumber.Visible = true;
             }
+        }
+
+        private void inputCharName_TextChanged(object sender, EventArgs e)
+        {
+            if (Home._instance.normalCards.TryGetValue(inputCharName.Text, out var innerDict))
+            {
+                CardSet set = innerDict[innerDict.Keys.First()];
+                inputCharNum.Enabled = false;
+                inputCharNum.Value = set.Number;
+                inputCharSeries.Enabled = false;
+                inputCharSeries.Text = set.Series;
+            }
+            else
+            {
+                inputCharNum.Enabled = true;
+                inputCharSeries.Enabled = true;
+            }
+
+            ValidateRequiredControls();
         }
 
         private void inputCharNum_ValueChanged(object sender, EventArgs e)
