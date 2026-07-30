@@ -12,3 +12,5 @@ How to Use
 2. Download and extract the zip file from the [releases page](https://github.com/dubblebrick/ExlaCardViewer/releases/latest), then run CardViewer.exe. Note: Don't move the executable file to another directory, it won't run properly.
 
 To add cards, simply click the "Add Card" button and enter all of the card info and text. Any cards you add will be saved locally on your PC. Alternatively, you can import a card from a .json file by clicking "Import Card." Note that exported cards don't include the images, so you'll still need to add those when importing.
+
+Design assets provided by RainbowYoshi
