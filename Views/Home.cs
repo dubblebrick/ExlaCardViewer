@@ -43,20 +43,35 @@ namespace CardViewer.Views
         private bool cardAnimated = false;
         private int currentPage = 0;
 
-        private MemoryStream? portraitImageStream;
-        private Image? portraitImage;
-        private MemoryStream? portraitAnimStream;
-        private Image? portraitAnim;
-        private MemoryStream? abilityImageStream;
-        private Image? abilityImage;
-        private MemoryStream? abilityAnimStream;
-        private Image? abilityAnim;
-        private MemoryStream? loreImageStream;
-        private Image? loreImage;
-        private MemoryStream? loreAnimStream;
-        private Image? loreAnim;
+        private MemoryStream?[] loadedImageStreams = new MemoryStream[6];
+        private Image?[] loadedImages = new Image[6];
+
+        private enum ImageSlot
+        {
+            Portrait,
+            PortraitAnim,
+            Ability,
+            AbilityAnim,
+            Lore,
+            LoreAnim
+        }
 
         public Home()
+        {
+            normalCards = new Dictionary<string, Dictionary<CardSet.RarityTier, CardSet>>();
+            mythicCards = new Dictionary<string, CardSet>();
+            favoriteCards = new HashSet<Tuple<string, CardSet.RarityTier>>();
+            _instance = this;
+
+            InitializeComponent();
+        }
+
+        /// <summary>
+        /// Onload event for Home form
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private async void Home_Load(object sender, EventArgs e)
         {
             // ensure that the app data directory exists
             if (!Directory.Exists(AppDataDir))
@@ -69,13 +84,8 @@ namespace CardViewer.Views
                 // Load dictionary from the JSON file
                 using (FileStream fs = File.OpenRead(NormalCardPath))
                 {
-                    normalCards = JsonSerializer.Deserialize<Dictionary<string, Dictionary<CardSet.RarityTier, CardSet>>>(fs) ?? new Dictionary<string, Dictionary<CardSet.RarityTier, CardSet>>();
+                    normalCards = await JsonSerializer.DeserializeAsync<Dictionary<string, Dictionary<CardSet.RarityTier, CardSet>>>(fs) ?? new Dictionary<string, Dictionary<CardSet.RarityTier, CardSet>>();
                 }
-            }
-            else
-            {
-                // Initialize empty dictionary
-                normalCards = new Dictionary<string, Dictionary<CardSet.RarityTier, CardSet>>();
             }
 
             if (File.Exists(MythicCardPath))
@@ -83,13 +93,8 @@ namespace CardViewer.Views
                 // Load dictionary from the JSON file
                 using (FileStream fs = File.OpenRead(MythicCardPath))
                 {
-                    mythicCards = JsonSerializer.Deserialize<Dictionary<string, CardSet>>(fs) ?? new Dictionary<string, CardSet>();
+                    mythicCards = await JsonSerializer.DeserializeAsync<Dictionary<string, CardSet>>(fs) ?? new Dictionary<string, CardSet>();
                 }
-            }
-            else
-            {
-                // Initialize empty dictionary
-                mythicCards = new Dictionary<string, CardSet>();
             }
 
             if (File.Exists(FavoriteCardPath))
@@ -97,16 +102,9 @@ namespace CardViewer.Views
                 // Load set from the JSON file
                 using (FileStream fs = File.OpenRead(FavoriteCardPath))
                 {
-                    favoriteCards = JsonSerializer.Deserialize<HashSet<Tuple<string, CardSet.RarityTier>>>(fs) ?? new HashSet<Tuple<string, CardSet.RarityTier>>();
+                    favoriteCards = await JsonSerializer.DeserializeAsync<HashSet<Tuple<string, CardSet.RarityTier>>>(fs) ?? new HashSet<Tuple<string, CardSet.RarityTier>>();
                 }
             }
-            else
-            {
-                // Initialize empty set
-                favoriteCards = new HashSet<Tuple<string, CardSet.RarityTier>>();
-            }
-
-            InitializeComponent();
 
             labelVersion.Text = Program.Version;
 
@@ -186,13 +184,10 @@ namespace CardViewer.Views
 
                     favoriteCards.Remove(card);
                 }
-                backgroundWorkerSaveData.RunWorkerAsync("a");
+                await SaveAllDataAsync();
 
-                Alert alertForm = new Alert(sb.ToString());
-                alertForm.ShowDialog();
+                new Alert(sb.ToString()).ShowDialog();
             }
-
-            _instance = this;
         }
 
         /// <summary>
@@ -270,14 +265,14 @@ namespace CardViewer.Views
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void buttonAddCard_Click(object sender, EventArgs e)
+        private async void buttonAddCard_Click(object sender, EventArgs e)
         {
             CardSet newSet = new CardSet();
             Form editCardForm = new EditCardSet(ref newSet);
             DialogResult result = editCardForm.ShowDialog();
             if (result == DialogResult.OK)
             {
-                AddCard(newSet);
+                await AddCardAsync(newSet);
             }
         }
 
@@ -286,14 +281,13 @@ namespace CardViewer.Views
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void buttonImportCard_Click(object sender, EventArgs e)
+        private async void buttonImportCard_Click(object sender, EventArgs e)
         {
             if (openFileImportCard.ShowDialog() == DialogResult.OK)
             {
                 if (Path.GetExtension(openFileImportCard.FileName) != ".json")
                 {
-                    Alert form = new Alert("Card data must be a .json file.");
-                    form.ShowDialog();
+                    new Alert("Card data must be a .json file.").ShowDialog();
                 }
                 else
                 {
@@ -308,15 +302,14 @@ namespace CardViewer.Views
 
                     if (newSet == null)
                     {
-                        Alert form = new Alert("Invalid card data.");
-                        form.ShowDialog();
+                        new Alert("Invalid card data.").ShowDialog();
                         return;
                     }
 
                     Form editCardForm = new EditCardSet(ref newSet);
                     if (editCardForm.ShowDialog() == DialogResult.OK)
                     {
-                        AddCard(newSet);
+                        await AddCardAsync(newSet);
                     }
                 }
             }
@@ -326,7 +319,7 @@ namespace CardViewer.Views
         /// Helper method to add a card set to the underlying data structure as well as the display.
         /// </summary>
         /// <param name="set">The set to add</param>
-        private void AddCard(CardSet set)
+        private async Task AddCardAsync(CardSet set)
         {
             if (set.Rarity == CardSet.RarityTier.Mythic)
             {
@@ -336,7 +329,7 @@ namespace CardViewer.Views
 
                 treeViewCards.SelectedNode = newNode;
 
-                backgroundWorkerSaveData.RunWorkerAsync("m");
+                await SaveFileAsync(MythicCardPath, mythicCards);
             }
             else
             {
@@ -381,7 +374,7 @@ namespace CardViewer.Views
 
                 treeViewCards.SelectedNode = newNode;
 
-                backgroundWorkerSaveData.RunWorkerAsync("n");
+                await SaveFileAsync(NormalCardPath, normalCards);
             }
             treeViewCards.Refresh();
         }
@@ -392,7 +385,7 @@ namespace CardViewer.Views
         /// <param name="sender"></param>
         /// <param name="e"></param>
 #pragma warning disable CS8600, CS8602
-        private void exportCard_Click(object sender, EventArgs e)
+        private async void exportCard_Click(object sender, EventArgs e)
         {
             if (selectedCard == null)
             {
@@ -414,7 +407,7 @@ namespace CardViewer.Views
                 {
                     if (stream != null)
                     {
-                        JsonSerializer.Serialize(stream, newCardSet);
+                        await JsonSerializer.SerializeAsync(stream, newCardSet);
                     }
                 }
             }
@@ -423,130 +416,99 @@ namespace CardViewer.Views
 #pragma warning restore CS8600, CS8602
 
         /// <summary>
-        /// Do Work event handler for the save data background worker
+        /// Background task to save all data files
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void backgroundWorkerSaveData_DoWork(object sender, DoWorkEventArgs e)
+        private async Task SaveAllDataAsync()
         {
-            switch (e.Argument as string)
+            Task.WaitAll(SaveFileAsync(NormalCardPath, normalCards), SaveFileAsync(MythicCardPath, mythicCards), SaveFileAsync(FavoriteCardPath, favoriteCards));
+        }
+
+        /// <summary>
+        /// Background task to save a specific file
+        /// </summary>
+        /// <param name="path"></param>
+        /// <param name="obj"></param>
+        /// <returns></returns>
+        private static async Task SaveFileAsync(string path, object obj)
+        {
+            using (FileStream fs = File.Create(path))
             {
-                case "n":
-                    using (FileStream fs = File.Create(NormalCardPath))
-                    {
-                        JsonSerializer.Serialize(fs, normalCards);
-                    }
-                    break;
-                case "m":
-                    using (FileStream fs = File.Create(MythicCardPath))
-                    {
-                        JsonSerializer.Serialize(fs, mythicCards);
-                    }
-                    break;
-                case "f":
-                    using (FileStream fs = File.Create(FavoriteCardPath))
-                    {
-                        JsonSerializer.Serialize(fs, favoriteCards);
-                    }
-                    break;
-                default:
-                    using (FileStream fs = File.Create(NormalCardPath))
-                    {
-                        JsonSerializer.Serialize(fs, normalCards);
-                    }
-                    using (FileStream fs = File.Create(MythicCardPath))
-                    {
-                        JsonSerializer.Serialize(fs, mythicCards);
-                    }
-                    using (FileStream fs = File.Create(FavoriteCardPath))
-                    {
-                        JsonSerializer.Serialize(fs, favoriteCards);
-                    }
-                    break;
+                await JsonSerializer.SerializeAsync(fs, obj);
             }
         }
 
         /// <summary>
-        /// Do Work event handler for the image loading background worker
+        /// Background task to load images for a card set
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        /// <exception cref="ArgumentException"></exception>
-        private void backgroundWorkerLoadImage_DoWork(object sender, DoWorkEventArgs e)
+        /// <param name="set"></param>
+        private async Task LoadImagesAsync(CardSet set)
         {
-            if (e.Argument == null || e.Argument is not CardSet)
-            {
-                throw new ArgumentException("Argument must be a CardSet");
-            }
+            List<Task> loadTasks = new List<Task>();
 
-            CardSet set = (CardSet)e.Argument;
+            loadTasks.Add(LoadImageFileAsync(set.Portrait.ImageFile, ImageSlot.Portrait));
 
-            portraitImage?.Dispose();
-            portraitImageStream?.Dispose();
-            portraitImageStream = new MemoryStream();
-            using (FileStream fs = File.OpenRead(set.Portrait.ImageFile))
-            {
-                fs.CopyTo(portraitImageStream);
-            }
-            portraitImage = Image.FromStream(portraitImageStream);
-
-
-            portraitAnim?.Dispose();
-            portraitAnimStream?.Dispose();
             if (set.Portrait.AnimFile != null)
             {
-                portraitAnimStream = new MemoryStream();
-                using (FileStream fs = File.OpenRead(set.Portrait.AnimFile))
-                {
-                    fs.CopyTo(portraitAnimStream);
-                }
-                portraitAnim = Image.FromStream(portraitAnimStream);
+                loadTasks.Add(LoadImageFileAsync(set.Portrait.AnimFile, ImageSlot.PortraitAnim));
             }
-
-            abilityImage?.Dispose();
-            abilityImageStream?.Dispose();
-            abilityImageStream = new MemoryStream();
-            using (FileStream fs = File.OpenRead(set.Ability.ImageFile))
+            else
             {
-                fs.CopyTo(abilityImageStream);
+                loadedImages[(int)ImageSlot.PortraitAnim]?.Dispose();
+                loadedImages[(int)ImageSlot.PortraitAnim] = null;
+                loadedImageStreams[(int)ImageSlot.PortraitAnim]?.Dispose();
+                loadedImageStreams[(int)ImageSlot.PortraitAnim] = null;
             }
-            abilityImage = Image.FromStream(abilityImageStream);
 
-            abilityAnim?.Dispose();
-            abilityAnimStream?.Dispose();
+            loadTasks.Add(LoadImageFileAsync(set.Ability.ImageFile, ImageSlot.Ability));
+
             if (set.Ability.AnimFile != null)
             {
-                abilityAnimStream = new MemoryStream();
-                using (FileStream fs = File.OpenRead(set.Ability.AnimFile))
-                {
-                    fs.CopyTo(abilityAnimStream);
-                }
-                abilityAnim = Image.FromStream(abilityAnimStream);
+                loadTasks.Add(LoadImageFileAsync(set.Ability.AnimFile, ImageSlot.AbilityAnim));
             }
-
-            loreImage?.Dispose();
-            loreImageStream?.Dispose();
-            loreImageStream = new MemoryStream();
-            using (FileStream fs = File.OpenRead(set.Lore.ImageFile))
+            else
             {
-                fs.CopyTo(loreImageStream);
+                loadedImages[(int)ImageSlot.AbilityAnim]?.Dispose();
+                loadedImages[(int)ImageSlot.AbilityAnim] = null;
+                loadedImageStreams[(int)ImageSlot.AbilityAnim]?.Dispose();
+                loadedImageStreams[(int)ImageSlot.AbilityAnim] = null;
             }
-            loreImage = Image.FromStream(loreImageStream);
 
-            loreAnim?.Dispose();
-            loreAnimStream?.Dispose();
+            loadTasks.Add(LoadImageFileAsync(set.Lore.ImageFile, ImageSlot.Lore));
+
             if (set.Lore.AnimFile != null)
             {
-                loreAnimStream = new MemoryStream();
-                using (FileStream fs = File.OpenRead(set.Lore.AnimFile))
-                {
-                    fs.CopyTo(loreAnimStream);
-                }
-                loreAnim = Image.FromStream(loreAnimStream);
+                loadTasks.Add(LoadImageFileAsync(set.Lore.AnimFile, ImageSlot.LoreAnim));
+            }
+            else
+            {
+                loadedImages[(int)ImageSlot.LoreAnim]?.Dispose();
+                loadedImages[(int)ImageSlot.LoreAnim] = null;
+                loadedImageStreams[(int)ImageSlot.LoreAnim]?.Dispose();
+                loadedImageStreams[(int)ImageSlot.LoreAnim] = null;
             }
 
-            // invoke garbage collect to clean up old images and prevent using a lot of memory
-            GC.Collect();
+            await Task.WhenAll(loadTasks);
+        }
+
+        private async Task LoadImageFileAsync(string path, ImageSlot slot)
+        {
+            // dispose previous images
+            loadedImages[(int)slot]?.Dispose();
+            loadedImageStreams[(int)slot]?.Dispose();
+
+            // new stream
+            MemoryStream imageStream = new MemoryStream();
+
+            using (FileStream fs = File.OpenRead(path))
+            {
+                // using CopyToAsync results in a deadlock for some reason
+                await fs.CopyToAsync(imageStream);
+            }
+
+            loadedImageStreams[(int)slot] = imageStream;
+            loadedImages[(int)slot] = Image.FromStream(imageStream);
         }
 
         /// <summary>
@@ -556,7 +518,7 @@ namespace CardViewer.Views
         /// <param name="e"></param>
         // disabling null reference warnings here since most things are implicitly null checked and the compiler isn't good at catching that
 #pragma warning disable CS8600, CS8602
-        private void treeViewCards_AfterSelect(object sender, TreeViewEventArgs e)
+        private async void treeViewCards_AfterSelect(object sender, TreeViewEventArgs e)
         {
             TreeNode node = treeViewCards.SelectedNode;
             if (node.Level == 0 || (node.Level == 1 && node.Parent.Name == "nodeStandardCards") || (node.Level == 2 && node.Parent.Parent.Name == "nodeStandardCards"))
@@ -597,8 +559,7 @@ namespace CardViewer.Views
                 buttonFavorite.Text = "ADD FAVORITE";
             }
 
-            UpdateDisplay();
-            panelCardDisplay.Visible = true;
+            await UpdateDisplayAsync();
         }
 #pragma warning restore CS8600, CS8602
 
@@ -607,7 +568,7 @@ namespace CardViewer.Views
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void buttonEdit_Click(object sender, EventArgs e)
+        private async void buttonEdit_Click(object sender, EventArgs e)
         {
             if (selectedCard == null)
             {
@@ -618,22 +579,26 @@ namespace CardViewer.Views
 
             Form editCardForm = new EditCardSet(ref set, true);
             DialogResult result = editCardForm.ShowDialog();
+
             if (result == DialogResult.OK)
             {
+                Task saveTask;
                 if (set.Rarity == CardSet.RarityTier.Mythic)
                 {
                     mythicCards[set.Name] = set;
 
-                    backgroundWorkerSaveData.RunWorkerAsync("m");
+                    saveTask = SaveFileAsync(MythicCardPath, mythicCards);
                 }
                 else
                 {
                     normalCards[set.Name][set.Rarity] = set;
 
-                    backgroundWorkerSaveData.RunWorkerAsync("n");
+                    saveTask = SaveFileAsync(NormalCardPath, normalCards);
                 }
 
-                UpdateDisplay();
+                await UpdateDisplayAsync();
+
+                await saveTask;
             }
         }
 
@@ -642,7 +607,7 @@ namespace CardViewer.Views
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void buttonDelete_Click(object sender, EventArgs e)
+        private async void buttonDelete_Click(object sender, EventArgs e)
         {
             if (selectedCard == null)
             {
@@ -737,7 +702,7 @@ namespace CardViewer.Views
                     }
                 }
             }
-            backgroundWorkerSaveData.RunWorkerAsync("a");
+            await SaveAllDataAsync();
         }
 
         /// <summary>
@@ -745,7 +710,7 @@ namespace CardViewer.Views
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void buttonFavorite_Click(object sender, EventArgs e)
+        private async void buttonFavorite_Click(object sender, EventArgs e)
         {
             if (selectedCard == null)
             {
@@ -775,14 +740,14 @@ namespace CardViewer.Views
                 buttonFavorite.Text = "REMOVE FAVORITE";
             }
 
-            backgroundWorkerSaveData.RunWorkerAsync("f");
+            await SaveFileAsync(FavoriteCardPath, favoriteCards);
         }
 
         /// <summary>
         /// Helper method that updates the display with the data for the currently selected card.
         /// </summary>
         /// <exception cref="InvalidOperationException">if no card is currently selected</exception>
-        private void UpdateDisplay()
+        private async Task UpdateDisplayAsync()
         {
             if (selectedCard == null)
             {
@@ -790,7 +755,7 @@ namespace CardViewer.Views
             }
 
             currentPage = 0;
-            backgroundWorkerLoadImage.RunWorkerAsync(selectedCard);
+            Task loadImageTask = LoadImagesAsync(selectedCard);
 
             labelSeries.Text = selectedCard.Rarity == CardSet.RarityTier.Mythic ? $"Mythic - {selectedCard.Series}" : $"{selectedCard.Series} Series #{selectedCard.Number}";
 
@@ -809,6 +774,26 @@ namespace CardViewer.Views
                     pictureBoxRarity.Image = Properties.Resources.rarityStar_Mythic;
                     break;
             }
+
+            try
+            {
+                await loadImageTask;
+            }
+            catch (Exception e)
+            {
+                if (e.InnerException is FileNotFoundException)
+                {
+                    new Alert("One or more image files could not be found.").ShowDialog();
+                }
+                else
+                {
+                    new Alert("Something went wrong when loading card images.").ShowDialog();
+                }
+                panelCardDisplay.Visible = false;
+                return;
+            }
+
+            panelCardDisplay.Visible = true;
             ShowPage(0);
         }
 
@@ -820,6 +805,12 @@ namespace CardViewer.Views
             }
             currentPage = pageNum;
 
+            panelLoreDetails.Visible = false;
+            labelBody1.Visible = false;
+            labelHeader2.Visible = false;
+            labelBody2.Visible = false;
+            labelQuote.Visible = false;
+
             switch (pageNum)
             {
                 case 0:
@@ -827,23 +818,13 @@ namespace CardViewer.Views
                     buttonAbility.BackColor = unselectedColor;
                     buttonLore.BackColor = unselectedColor;
 
-                    panelLoreDetails.Visible = false;
-
                     labelHeader1.Text = selectedCard.Portrait.Title;
-                    labelBody1.Visible = false;
-                    labelHeader2.Visible = false;
-                    labelBody2.Visible = false;
-                    labelQuote.Visible = false;
 
                     labelAnimAvailable.Visible = selectedCard.Portrait.AnimFile != null;
 
-                    while (backgroundWorkerLoadImage.IsBusy)
+                    if (loadedImageStreams[(int)ImageSlot.Portrait] != null)
                     {
-                        Application.DoEvents();
-                    }
-                    if (portraitImageStream != null)
-                    {
-                        pictureBoxCard.Image = portraitImage;
+                        pictureBoxCard.Image = loadedImages[(int)ImageSlot.Portrait];
                     }
                     break;
                 case 1:
@@ -851,24 +832,15 @@ namespace CardViewer.Views
                     buttonPortrait.BackColor = unselectedColor;
                     buttonLore.BackColor = unselectedColor;
 
-                    panelLoreDetails.Visible = false;
-
                     labelHeader1.Text = "Ability: " + selectedCard.Ability.AbilityName;
                     labelBody1.Visible = true;
                     labelBody1.Text = selectedCard.Ability.AbilityDesc;
-                    labelHeader2.Visible = false;
-                    labelBody2.Visible = false;
-                    labelQuote.Visible = false;
 
                     labelAnimAvailable.Visible = selectedCard.Ability.AnimFile != null;
 
-                    while (backgroundWorkerLoadImage.IsBusy)
+                    if (loadedImageStreams[(int)ImageSlot.Ability] != null)
                     {
-                        Application.DoEvents();
-                    }
-                    if (abilityImageStream != null)
-                    {
-                        pictureBoxCard.Image = abilityImage;
+                        pictureBoxCard.Image = loadedImages[(int)ImageSlot.Ability];
                     }
                     break;
                 case 2:
@@ -883,7 +855,6 @@ namespace CardViewer.Views
                     labelDetail2Name.Text = selectedCard.Lore.Detail2Name;
                     labelDetail2.Text = selectedCard.Lore.Detail2;
 
-                    labelBody1.Visible = false; // need to make the controls visible in a specific order to make sure they display correctly
                     labelQuote.Visible = true;
                     labelBody2.Visible = true;
                     labelHeader2.Visible = true;
@@ -897,18 +868,18 @@ namespace CardViewer.Views
 
                     labelAnimAvailable.Visible = selectedCard.Lore.AnimFile != null;
 
-                    while (backgroundWorkerLoadImage.IsBusy)
+                    if (loadedImageStreams[(int)ImageSlot.Lore] != null)
                     {
-                        Application.DoEvents();
-                    }
-                    if (loreImageStream != null)
-                    {
-                        pictureBoxCard.Image = loreImage;
+                        pictureBoxCard.Image = loadedImages[(int)ImageSlot.Lore];
                     }
                     break;
             }
 
-            this.Focus();
+            labelBody1.BringToFront();
+            labelHeader2.BringToFront();
+            labelBody2.BringToFront();
+            labelQuote.BringToFront();
+
             panelButtons.Refresh();
             panelCardDisplay.Refresh();
         }
@@ -931,21 +902,21 @@ namespace CardViewer.Views
                     switch (currentPage)
                     {
                         case 0:
-                            if (portraitAnim != null)
+                            if (loadedImages[(int)ImageSlot.PortraitAnim] != null)
                             {
-                                pictureBoxCard.Image = portraitAnim;
+                                pictureBoxCard.Image = loadedImages[(int)ImageSlot.PortraitAnim];
                             }
                             break;
                         case 1:
-                            if (abilityAnim != null)
+                            if (loadedImages[(int)ImageSlot.AbilityAnim] != null)
                             {
-                                pictureBoxCard.Image = abilityAnim;
+                                pictureBoxCard.Image = loadedImages[(int)ImageSlot.AbilityAnim];
                             }
                             break;
                         case 2:
-                            if (loreAnim != null)
+                            if (loadedImages[(int)ImageSlot.LoreAnim] != null)
                             {
-                                pictureBoxCard.Image = loreAnim;
+                                pictureBoxCard.Image = loadedImages[(int)ImageSlot.LoreAnim];
                             }
                             break;
                     }
@@ -957,21 +928,21 @@ namespace CardViewer.Views
                     switch (currentPage)
                     {
                         case 0:
-                            if (portraitImage != null)
+                            if (loadedImages[(int)ImageSlot.Portrait] != null)
                             {
-                                pictureBoxCard.Image = portraitImage;
+                                pictureBoxCard.Image = loadedImages[(int)ImageSlot.Portrait];
                             }
                             break;
                         case 1:
-                            if (abilityImage != null)
+                            if (loadedImages[(int)ImageSlot.Ability] != null)
                             {
-                                pictureBoxCard.Image = abilityImage;
+                                pictureBoxCard.Image = loadedImages[(int)ImageSlot.Ability];
                             }
                             break;
                         case 2:
-                            if (loreImage != null)
+                            if (loadedImages[(int)ImageSlot.Lore] != null)
                             {
-                                pictureBoxCard.Image = loreImage;
+                                pictureBoxCard.Image = loadedImages[(int)ImageSlot.Lore];
                             }
                             break;
                     }

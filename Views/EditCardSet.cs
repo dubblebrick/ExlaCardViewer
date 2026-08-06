@@ -195,8 +195,7 @@ namespace CardViewer.Views
             {
                 if (Path.GetExtension(openFileDialogPng.FileName) != ".png")
                 {
-                    Alert form = new Alert("Card image must be a .png file.");
-                    form.ShowDialog();
+                    new Alert("Card image must be a .png file.").ShowDialog();
                 }
                 else
                 {
@@ -215,8 +214,7 @@ namespace CardViewer.Views
             {
                 if (Path.GetExtension(openFileDialogGif.FileName) != ".gif")
                 {
-                    Alert form = new Alert("Card animation must be a .gif file.");
-                    form.ShowDialog();
+                    new Alert("Card animation must be a .gif file.").ShowDialog();
                 }
                 else
                 {
@@ -242,8 +240,7 @@ namespace CardViewer.Views
             {
                 if (Path.GetExtension(openFileDialogPng.FileName) != ".png")
                 {
-                    Alert form = new Alert("Card image must be a .png file.");
-                    form.ShowDialog();
+                    new Alert("Card image must be a .png file.").ShowDialog();
                 }
                 else
                 {
@@ -262,8 +259,7 @@ namespace CardViewer.Views
             {
                 if (Path.GetExtension(openFileDialogGif.FileName) != ".gif")
                 {
-                    Alert form = new Alert("Card animation must be a .gif file.");
-                    form.ShowDialog();
+                    new Alert("Card animation must be a .gif file.").ShowDialog();
                 }
                 else
                 {
@@ -291,8 +287,7 @@ namespace CardViewer.Views
             {
                 if (Path.GetExtension(openFileDialogPng.FileName) != ".png")
                 {
-                    Alert form = new Alert("Card image must be a .png file.");
-                    form.ShowDialog();
+                    new Alert("Card image must be a .png file.").ShowDialog();
                 }
                 else
                 {
@@ -311,8 +306,7 @@ namespace CardViewer.Views
             {
                 if (Path.GetExtension(openFileDialogGif.FileName) != ".gif")
                 {
-                    Alert form = new Alert("Card animation must be a .gif file.");
-                    form.ShowDialog();
+                    new Alert("Card animation must be a .gif file.").ShowDialog();
                 }
                 else
                 {
@@ -377,8 +371,7 @@ namespace CardViewer.Views
                 {
                     if (Home._instance.mythicCards.ContainsKey(inputCharName.Text))
                     {
-                        Alert form = new Alert("A character with the same name and rarity already exists.");
-                        form.ShowDialog();
+                        new Alert("A character with the same name and rarity already exists.").ShowDialog();
                         return;
                     }
                 }
@@ -389,8 +382,7 @@ namespace CardViewer.Views
                     {
                         if (innerDict.ContainsKey((CardSet.RarityTier)rarity))
                         {
-                            Alert form = new Alert("A character with the same name and rarity already exists.");
-                            form.ShowDialog();
+                            new Alert("A character with the same name and rarity already exists.").ShowDialog();
                             return;
                         }
                     }
