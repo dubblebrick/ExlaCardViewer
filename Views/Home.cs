@@ -422,7 +422,7 @@ namespace CardViewer.Views
         /// <param name="e"></param>
         private async Task SaveAllDataAsync()
         {
-            Task.WaitAll(SaveFileAsync(NormalCardPath, normalCards), SaveFileAsync(MythicCardPath, mythicCards), SaveFileAsync(FavoriteCardPath, favoriteCards));
+            await Task.WhenAll(SaveFileAsync(NormalCardPath, normalCards), SaveFileAsync(MythicCardPath, mythicCards), SaveFileAsync(FavoriteCardPath, favoriteCards));
         }
 
         /// <summary>
